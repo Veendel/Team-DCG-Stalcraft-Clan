@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Team DCG</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <h2>⚡ TEAM DCG</h2>
+    <div class="nav-links">
+      <span id="welcomeMsg"></span>
+      <a href="#" id="adminLink" style="display: none;">Admin Panel</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container dashboard">
+    <h1>📊 Member Dashboard</h1>
+
+    <div class="dashboard-grid">
+      <!-- Player Stats -->
+      <div class="card">
+        <h2>⚔️ Player Stats</h2>
+        <form id="statsForm">
+          <div class="form-group">
+            <label for="ingameName">In-Game Name</label>
+            <input type="text" id="ingameName" placeholder="Your STALCRAFT name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="discordName">Discord Name</label>
+            <input type="text" id="discordName" placeholder="YourName#1234" required>
+          </div>
+
+          <div class="form-group">
+            <label for="kills">Kills</label>
+            <input type="number" id="kills" min="0" placeholder="0" required>
+          </div>
+
+          <div class="form-group">
+            <label for="deaths">Deaths</label>
+            <input type="number" id="deaths" min="0" placeholder="0" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Update Stats</button>
+        </form>
+      </div>
+
+      <!-- Equipment -->
+      <div class="card">
+        <h2>🎒 Equipment</h2>
+        <form id="equipmentForm">
+          <div class="form-group">
+            <label for="weapons">Weapons</label>
+            <textarea id="weapons" placeholder="e.g., Master Gear AK-74M, Master Gear VSS"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="armors">Armors</label>
+            <textarea id="armors" placeholder="e.g., Master Gear SEVA Suit, Master Gear Exoskeleton"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="artifactBuilds">Artifact Builds</label>
+            <textarea id="artifactBuilds" placeholder="Describe your artifact setups"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="artifactImage">Artifact Build Screenshot</label>
+            <input type="file" id="artifactImage" accept="image/*">
+            <small style="color: var(--dcg-text-dim);">Upload a screenshot of your artifact setup</small>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Update Equipment</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Consumables Section -->
+    <div class="card">
+      <h2>💊 Consumables Inventory</h2>
+      <form id="consumablesForm">
+        <div class="consumables-section">
+          
+          <!-- Grenades -->
+          <div class="consumable-category">
+            <h3>💣 Grenades</h3>
+            <div class="consumable-item">
+              <label for="nadePlantain">Plantain</label>
+              <input type="number" id="nadePlantain" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="nadeNapalm">Napalm</label>
+              <input type="number" id="nadeNapalm" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="nadeThunder">Thunder</label>
+              <input type="number" id="nadeThunder" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="nadeFrost">Frost</label>
+              <input type="number" id="nadeFrost" min="0" value="0">
+            </div>
+          </div>
+
+          <!-- Enhancement -->
+          <div class="consumable-category">
+            <h3>⚡ Enhancement</h3>
+            <div class="consumable-item">
+              <label for="enhSolyanka">Solyanka</label>
+              <input type="number" id="enhSolyanka" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="enhGarlicSoup">Garlic Soup</label>
+              <input type="number" id="enhGarlicSoup" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="enhPeaSoup">Pea Soup</label>
+              <input type="number" id="enhPeaSoup" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="enhLingonberry">Lingonberry</label>
+              <input type="number" id="enhLingonberry" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="enhFrosty">Frosty</label>
+              <input type="number" id="enhFrosty" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="enhAlcobull">Alcobull</label>
+              <input type="number" id="enhAlcobull" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="enhGeyserVodka">Geyser Vodka</label>
+              <input type="number" id="enhGeyserVodka" min="0" value="0">
+            </div>
+          </div>
+
+          <!-- Mobility -->
+          <div class="consumable-category">
+            <h3>🏃 Mobility</h3>
+            <div class="consumable-item">
+              <label for="mobGrog">Grog</label>
+              <input type="number" id="mobGrog" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="mobStrengthStimulator">Strength Stimulator</label>
+              <input type="number" id="mobStrengthStimulator" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="mobNeurotonic">Neurotonic</label>
+              <input type="number" id="mobNeurotonic" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="mobBattery">Battery</label>
+              <input type="number" id="mobBattery" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="mobSalt">SALT</label>
+              <input type="number" id="mobSalt" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="mobAtlas">ATLAS</label>
+              <input type="number" id="mobAtlas" min="0" value="0">
+            </div>
+          </div>
+
+          <!-- Short-term -->
+          <div class="consumable-category">
+            <h3>💉 Short-term</h3>
+            <div class="consumable-item">
+              <label for="shortPainkiller">Pain Killer</label>
+              <input type="number" id="shortPainkiller" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="shortSchizoyorsh">SchizoYorsh</label>
+              <input type="number" id="shortSchizoyorsh" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="shortMorphine">Morphine</label>
+              <input type="number" id="shortMorphine" min="0" value="0">
+            </div>
+            <div class="consumable-item">
+              <label for="shortEpinephrine">Epinephrine</label>
+              <input type="number" id="shortEpinephrine" min="0" value="0">
+            </div>
+          </div>
+
+          <!-- Bonus -->
+          <div class="consumable-category">
+            <h3>🎁 Bonus</h3>
+            <div class="consumable-item">
+              <label for="bonusStomp">STOMP</label>
+              <input type="checkbox" id="bonusStomp">
+            </div>
+            <div class="consumable-item">
+              <label for="bonusStrike">Strike</label>
+              <input type="checkbox" id="bonusStrike">
+            </div>
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 20px; width: 100%;">Update Consumables</button>
+      </form>
+    </div>
+
+    <div id="message" class="success"></div>
+  </div>
+
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

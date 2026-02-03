@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Team DCG</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <h2>⚡ TEAM DCG - ADMIN PANEL</h2>
+    <div class="nav-links">
+      <span id="totalUsers">Loading...</span>
+      <a href="/dashboard.html">My Dashboard</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container admin-container">
+    <h1>👑 Clan Management Dashboard</h1>
+
+    <!-- Statistics Overview -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>👥 Total Members</h3>
+        <p class="stat-number" id="statTotalUsers">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>⚔️ Total Kills</h3>
+        <p class="stat-number" id="statTotalKills">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>💀 Total Deaths</h3>
+        <p class="stat-number" id="statTotalDeaths">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>📊 Avg K/D</h3>
+        <p class="stat-number" id="statAvgKD">0.00</p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="admin-actions">
+      <button class="btn btn-primary" id="refreshBtn">🔄 Refresh Data</button>
+      <button class="btn btn-secondary" id="exportBtn">📥 Export All Data</button>
+      <button class="btn btn-secondary" id="statsViewBtn">📊 Stats View</button>
+      <button class="btn btn-secondary" id="consumablesViewBtn">💊 Consumables View</button>
+    </div>
+
+    <div id="message" class="success"></div>
+
+    <!-- STATS VIEW -->
+    <div id="statsView" class="card table-card">
+      <div class="table-header">
+        <h2>📊 Member Stats & Equipment</h2>
+        <input type="text" id="searchInput" placeholder="🔍 Search members...">
+      </div>
+      
+      <div class="table-wrapper">
+        <table id="statsTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>In-Game Name</th>
+              <th>Discord</th>
+              <th>Role</th>
+              <th>Kills</th>
+              <th>Deaths</th>
+              <th>K/D</th>
+              <th>Weapons</th>
+              <th>Armors</th>
+              <th>Artifacts</th>
+              <th>Image</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="statsBody">
+            <tr>
+              <td colspan="14" style="text-align: center;">Loading data...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CONSUMABLES VIEW -->
+    <div id="consumablesView" class="card table-card" style="display: none;">
+      <div class="table-header">
+        <h2>💊 Consumables Inventory</h2>
+        <input type="text" id="searchInput2" placeholder="🔍 Search members...">
+      </div>
+      
+      <div class="table-wrapper">
+        <table id="consumablesTable">
+          <thead>
+            <tr>
+              <th>Member</th>
+              <th colspan="4" style="background: #1a1a1a;">💣 Grenades</th>
+              <th colspan="7" style="background: #1a1a1a;">⚡ Enhancement</th>
+              <th colspan="6" style="background: #1a1a1a;">🏃 Mobility</th>
+              <th colspan="4" style="background: #1a1a1a;">💉 Short-term</th>
+              <th colspan="2" style="background: #1a1a1a;">🎁 Bonus</th>
+            </tr>
+            <tr>
+              <th>Username</th>
+              <!-- Grenades -->
+              <th>Plantain</th>
+              <th>Napalm</th>
+              <th>Thunder</th>
+              <th>Frost</th>
+              <!-- Enhancement -->
+              <th>Solyanka</th>
+              <th>Garlic</th>
+              <th>Pea</th>
+              <th>Lingon</th>
+              <th>Frosty</th>
+              <th>Alcobull</th>
+              <th>Geyser</th>
+              <!-- Mobility -->
+              <th>Grog</th>
+              <th>Strength</th>
+              <th>Neuro</th>
+              <th>Battery</th>
+              <th>SALT</th>
+              <th>ATLAS</th>
+              <!-- Short-term -->
+              <th>Painkiller</th>
+              <th>Schizo</th>
+              <th>Morphine</th>
+              <th>Epi</th>
+              <!-- Bonus -->
+              <th>STOMP</th>
+              <th>Strike</th>
+            </tr>
+          </thead>
+          <tbody id="consumablesBody">
+            <tr>
+              <td colspan="24" style="text-align: center;">Loading data...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

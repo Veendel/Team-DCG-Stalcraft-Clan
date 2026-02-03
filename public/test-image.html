@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Image Upload</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card" style="max-width: 600px; margin: 50px auto;">
+      <h2>Test Image Upload</h2>
+      
+      <form id="testForm">
+        <div class="form-group">
+          <label for="testImage">Select Image</label>
+          <input type="file" id="testImage" accept="image/*" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload & Preview</button>
+      </form>
+
+      <div id="preview" style="margin-top: 20px;"></div>
+      <div id="result" style="margin-top: 20px; padding: 15px; background: var(--dcg-grey); border-radius: 8px;"></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('testForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const file = document.getElementById('testImage').files[0];
+      const resultDiv = document.getElementById('result');
+      const previewDiv = document.getElementById('preview');
+      
+      if (!file) {
+        resultDiv.innerHTML = '❌ No file selected';
+        return;
+      }
+
+      // Show file info
+      resultDiv.innerHTML = `
+        <strong>File Info:</strong><br>
+        Name: ${file.name}<br>
+        Size: ${(file.size / 1024).toFixed(2)} KB<br>
+        Type: ${file.type}<br>
+      `;
+
+      // Check size
+      if (file.size > 5 * 1024 * 1024) {
+        resultDiv.innerHTML += '<br>❌ File too large! Max 5MB';
+        return;
+      }
+
+      // Read and preview
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64 = e.target.result;
+        
+        previewDiv.innerHTML = `
+          <h3>Preview:</h3>
+          <img src="${base64}" style="max-width: 100%; border: 2px solid var(--dcg-accent);">
+        `;
+        
+        resultDiv.innerHTML += `<br>✓ Image loaded successfully!<br>Base64 length: ${base64.length} characters`;
+      };
+      
+      reader.onerror = function() {
+        resultDiv.innerHTML += '<br>❌ Failed to read file';
+      };
+      
+      reader.readAsDataURL(file);
+    });
+  </script>
+</body>
+</html>
