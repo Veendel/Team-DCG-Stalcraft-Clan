@@ -1,60 +1,48 @@
-const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
-const path = require('path');
 
-// Create database connection
-const db = new sqlite3.Database(path.join(__dirname, '../stalcraft.db'), (err) => {
-  if (err) {
-    console.error('Database connection error:', err);
-  } else {
-    console.log('✓ Connected to SQLite database');
-  }
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
 });
 
-// Initialize database tables
-db.serialize(() => {
-  // Users table
-  db.run(`
+const initDb = async () => {
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       username TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
       role TEXT DEFAULT 'user',
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT NOW()
     )
   `);
 
-  // Player stats table (UPDATED)
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS player_stats (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER NOT NULL,
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       ingame_name TEXT,
       discord_name TEXT,
       kills INTEGER DEFAULT 0,
-      deaths INTEGER DEFAULT 0,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      deaths INTEGER DEFAULT 0
     )
   `);
 
-  // Equipment table (UPDATED)
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS equipment (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER NOT NULL,
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       weapons TEXT,
       armors TEXT,
       artifact_builds TEXT,
-      artifact_image TEXT,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      artifact_image TEXT
     )
   `);
 
-  // Consumables table (NEW)
-  db.run(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS consumables (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER NOT NULL,
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       nade_plantain INTEGER DEFAULT 0,
       nade_napalm INTEGER DEFAULT 0,
       nade_thunder INTEGER DEFAULT 0,
@@ -76,22 +64,26 @@ db.serialize(() => {
       short_schizoyorsh INTEGER DEFAULT 0,
       short_morphine INTEGER DEFAULT 0,
       short_epinephrine INTEGER DEFAULT 0,
-      bonus_stomp BOOLEAN DEFAULT 0,
-      bonus_strike BOOLEAN DEFAULT 0,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      bonus_stomp BOOLEAN DEFAULT FALSE,
+      bonus_strike BOOLEAN DEFAULT FALSE
     )
   `);
 
-  // Create default admin user
-  const adminPassword = bcrypt.hashSync('KiralyAdmin54', 10);
-  db.run(`
-    INSERT OR IGNORE INTO users (username, password, role) 
-    VALUES ('admin', ?, 'admin')
-  `, [adminPassword], function(err) {
-    if (!err && this.changes > 0) {
-      console.log('✓ Default admin user created (username: admin, password: admin123)');
-    }
-  });
+  // Create default admin (idempotent)
+  const adminPassword = await bcrypt.hash('KiralyAdmin54', 10);
+
+  await pool.query(`
+    INSERT INTO users (username, password, role)
+    VALUES ($1, $2, 'admin')
+    ON CONFLICT (username) DO NOTHING
+  `, ['admin', adminPassword]);
+
+  console.log('✓ Database initialized');
+};
+
+initDb().catch(err => {
+  console.error('DB init failed', err);
+  process.exit(1);
 });
 
-module.exports = db;
+module.exports = pool;
