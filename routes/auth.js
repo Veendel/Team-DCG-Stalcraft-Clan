@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const db = require('../database/db');
+const db = require('../database/db'); // Now a pg.Pool
 const router = express.Router();
 const {
   authLimiter,
@@ -18,7 +18,6 @@ const {
 // REGISTER NEW USER
 // ============================================
 
-// REGISTER NEW USER
 router.post('/register', 
   registerLimiter,
   validateRegistration,
@@ -28,54 +27,46 @@ router.post('/register',
 
     try {
       // Check if username already exists
-      db.get(
-        'SELECT username FROM users WHERE username = ?',
-        [username],
-        async (err, existingUser) => {
-          if (err) {
-            return res.status(500).json({ error: 'Server error' });
-          }
+      const existingResult = await db.query('SELECT username FROM users WHERE username = $1', [username]);
+      if (existingResult.rows.length > 0) {
+        return res.status(400).json({ error: 'Username already exists' });
+      }
 
-          if (existingUser) {
-            return res.status(400).json({ error: 'Username already exists' });
-          }
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-          // Hash password
-          const hashedPassword = await bcrypt.hash(password, 10);
+      // Start transaction for atomic inserts
+      const client = await db.connect();
+      try {
+        await client.query('BEGIN');
 
-          // Insert user
-          db.run(
-            'INSERT INTO users (username, password) VALUES (?, ?)',
-            [username, hashedPassword],
-            function(err) {
-              if (err) {
-                console.error('Registration error:', err);
-                return res.status(500).json({ error: 'Registration failed' });
-              }
+        // Insert user
+        const userResult = await client.query(
+          'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id',
+          [username, hashedPassword]
+        );
+        const userId = userResult.rows[0].id;
 
-              const userId = this.lastID;
+        // Create default player stats
+        await client.query('INSERT INTO player_stats (user_id) VALUES ($1)', [userId]);
 
-              // Create default player stats
-              db.run('INSERT INTO player_stats (user_id) VALUES (?)', [userId], (err) => {
-                if (err) console.error('Error creating player_stats:', err);
-              });
+        // Create default equipment
+        await client.query('INSERT INTO equipment (user_id) VALUES ($1)', [userId]);
 
-              // Create default equipment
-              db.run('INSERT INTO equipment (user_id) VALUES (?)', [userId], (err) => {
-                if (err) console.error('Error creating equipment:', err);
-              });
+        // Create default consumables
+        await client.query('INSERT INTO consumables (user_id) VALUES ($1)', [userId]);
 
-              // Create default consumables
-              db.run('INSERT INTO consumables (user_id) VALUES (?)', [userId], (err) => {
-                if (err) console.error('Error creating consumables:', err);
-              });
+        await client.query('COMMIT');
 
-              console.log(`✓ New user registered: ${username} (ID: ${userId})`);
-              res.status(201).json({ message: 'User registered successfully' });
-            }
-          );
-        }
-      );
+        console.log(`✓ New user registered: ${username} (ID: ${userId})`);
+        res.status(201).json({ message: 'User registered successfully' });
+      } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('Registration error:', err);
+        res.status(500).json({ error: 'Registration failed' });
+      } finally {
+        client.release();
+      }
     } catch (error) {
       console.error('Registration error:', error);
       res.status(500).json({ error: 'Server error' });
@@ -91,7 +82,7 @@ router.post('/login',
   authLimiter, // Strict rate limiting
   validateLogin, // Validate input
   checkValidation, // Check for validation errors
-  (req, res) => {
+  async (req, res) => {
     const { username, password } = req.body;
 
     // Check if account is locked
@@ -101,55 +92,53 @@ router.post('/login',
       });
     }
 
-    db.get(
-      'SELECT * FROM users WHERE username = ?',
-      [username],
-      async (err, user) => {
-        if (err) {
-          return res.status(500).json({ error: 'Server error' });
-        }
+    try {
+      const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+      const user = result.rows[0];
 
-        if (!user) {
-          trackFailedLogin(username);
-          return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        const validPassword = await bcrypt.compare(password, user.password);
-
-        if (!validPassword) {
-          const isLocked = trackFailedLogin(username);
-          
-          if (isLocked) {
-            return res.status(429).json({ 
-              error: 'Too many failed login attempts. Account locked for 15 minutes.' 
-            });
-          }
-          
-          return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        // Clear failed attempts on successful login
-        clearFailedAttempts(username);
-
-        // Generate JWT token
-        const token = jwt.sign(
-          { id: user.id, username: user.username, role: user.role },
-          process.env.JWT_SECRET,
-          { expiresIn: '24h' }
-        );
-
-        console.log(`✓ User logged in: ${username}`);
-
-        res.json({
-          token,
-          user: {
-            id: user.id,
-            username: user.username,
-            role: user.role
-          }
-        });
+      if (!user) {
+        trackFailedLogin(username);
+        return res.status(401).json({ error: 'Invalid credentials' });
       }
-    );
+
+      const validPassword = await bcrypt.compare(password, user.password);
+
+      if (!validPassword) {
+        const isLocked = trackFailedLogin(username);
+        
+        if (isLocked) {
+          return res.status(429).json({ 
+            error: 'Too many failed login attempts. Account locked for 15 minutes.' 
+          });
+        }
+        
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+
+      // Clear failed attempts on successful login
+      clearFailedAttempts(username);
+
+      // Generate JWT token
+      const token = jwt.sign(
+        { id: user.id, username: user.username, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+
+      console.log(`✓ User logged in: ${username}`);
+
+      res.json({
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          role: user.role
+        }
+      });
+    } catch (err) {
+      console.error('Login error:', err);
+      res.status(500).json({ error: 'Server error' });
+    }
   }
 );
 
