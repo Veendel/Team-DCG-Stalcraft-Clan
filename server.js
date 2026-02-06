@@ -84,19 +84,14 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`
 ╔════════════════════════════════════════╗
-║   STALCRAFT Player Manager Server     ║
-║   Running on http://localhost:${PORT}   ║
+║   STALCRAFT Player Manager Server      ║
 ║                                        ║
-║   🛡️  Security Features Active:       ║
-║   ✓ Rate limiting                     ║
-║   ✓ IP blacklisting                   ║
-║   ✓ Input validation                  ║
-║   ✓ Security headers (Helmet)         ║
-║   ✓ Request size limits               ║
+║   Rate limiting                        ║
+║   IP blacklisting                      ║
+║   Input validation                     ║
+║   Security headers (Helmet)            ║
+║   Request size limits                  ║
 ╚════════════════════════════════════════╝
 
-Default Admin:
-  Username: admin
-  Password: admin123
   `);
 });

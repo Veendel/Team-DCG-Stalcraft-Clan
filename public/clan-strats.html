@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clan Strats - Team DCG</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <h2>⚡ TEAM DCG - CLAN STRATS</h2>
+    <div class="nav-links">
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="#" id="adminLink" style="display: none;">Admin Panel</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>📋 Clan Strategies</h1>
+
+    <!-- Admin Upload Section -->
+    <div id="adminUploadSection" class="card" style="display: none;">
+      <h2>📤 Upload New Strategy</h2>
+      <form id="uploadStratForm">
+        <div class="form-group">
+          <label for="stratTitle">Title</label>
+          <input type="text" id="stratTitle" placeholder="e.g., Defense Strategy for Map XYZ" required>
+        </div>
+
+        <div class="form-group">
+          <label for="stratDescription">Description (Optional)</label>
+          <textarea id="stratDescription" placeholder="Briefly describe this strategy..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="stratImage">Strategy Image</label>
+          <input type="file" id="stratImage" accept="image/*" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload Strategy</button>
+      </form>
+    </div>
+
+    <div id="message" class="success"></div>
+
+    <!-- Strats Gallery -->
+    <div class="card">
+      <h2>📚 Strategy Library</h2>
+      <div id="stratsGallery" class="strats-gallery">
+        <p style="text-align: center; color: var(--dcg-text-dim);">Loading strategies...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/clan-strats.js"></script>
+</body>
+</html>

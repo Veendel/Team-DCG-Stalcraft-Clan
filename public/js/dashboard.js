@@ -108,9 +108,9 @@ async function loadConsumables() {
       document.getElementById('shortMorphine').value = consumables.short_morphine || 0;
       document.getElementById('shortEpinephrine').value = consumables.short_epinephrine || 0;
       
-      // Bonus
-      document.getElementById('bonusStomp').checked = consumables.bonus_stomp || false;
-      document.getElementById('bonusStrike').checked = consumables.bonus_strike || false;
+      // Bonus (now countable)
+      document.getElementById('bonusStomp').value = consumables.bonus_stomp || 0;
+      document.getElementById('bonusStrike').value = consumables.bonus_strike || 0;
     }
   } catch (error) {
     console.error('Failed to load consumables:', error);
@@ -272,8 +272,8 @@ document.getElementById('consumablesForm').addEventListener('submit', async (e) 
     short_morphine: parseInt(document.getElementById('shortMorphine').value),
     short_epinephrine: parseInt(document.getElementById('shortEpinephrine').value),
     
-    bonus_stomp: document.getElementById('bonusStomp').checked ? 1 : 0,
-    bonus_strike: document.getElementById('bonusStrike').checked ? 1 : 0
+    bonus_stomp: parseInt(document.getElementById('bonusStomp').value),
+    bonus_strike: parseInt(document.getElementById('bonusStrike').value)
   };
 
   try {
@@ -308,6 +308,87 @@ function showMessage(msg, type = 'success') {
   setTimeout(() => messageDiv.style.display = 'none', 4000);
 }
 
+// ============================================
+// CLAN WAR REGISTRATION (NEW)
+// ============================================
+
+async function loadClanWarStatus() {
+  try {
+    const response = await fetch(`/api/clan-war/status/${user.id}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      updateClanWarUI(data.registered);
+    }
+  } catch (error) {
+    console.error('Failed to load clan war status:', error);
+  }
+}
+
+function updateClanWarUI(registered) {
+  const statusDiv = document.getElementById('clanWarStatus');
+  const yesBtn = document.getElementById('registerYes');
+  const noBtn = document.getElementById('registerNo');
+
+  if (registered === true) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = 'rgba(76, 175, 80, 0.2)';
+    statusDiv.style.borderLeft = '4px solid var(--dcg-success)';
+    statusDiv.innerHTML = '✅ <strong>Registered:</strong> You\'re IN for today\'s clan war!';
+    yesBtn.style.opacity = '1';
+    noBtn.style.opacity = '0.5';
+  } else if (registered === false) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = 'rgba(255, 68, 68, 0.2)';
+    statusDiv.style.borderLeft = '4px solid var(--dcg-accent)';
+    statusDiv.innerHTML = '❌ <strong>Not Registered:</strong> You\'re sitting out today.';
+    yesBtn.style.opacity = '0.5';
+    noBtn.style.opacity = '1';
+  } else {
+    statusDiv.style.display = 'none';
+    yesBtn.style.opacity = '1';
+    noBtn.style.opacity = '1';
+  }
+}
+
+document.getElementById('registerYes').addEventListener('click', async () => {
+  await registerForClanWar(true);
+});
+
+document.getElementById('registerNo').addEventListener('click', async () => {
+  await registerForClanWar(false);
+});
+
+async function registerForClanWar(registered) {
+  try {
+    const response = await fetch('/api/clan-war/register', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ registered })
+    });
+
+    if (response.ok) {
+      updateClanWarUI(registered);
+      showMessage(registered ? 
+        '✓ You\'re registered for clan war!' : 
+        '✓ Registration cancelled', 
+        'success'
+      );
+    } else {
+      showMessage('❌ Failed to update registration', 'error');
+    }
+  } catch (error) {
+    showMessage('❌ Connection error', 'error');
+  }
+}
+
+// Load clan war status on page load
+loadClanWarStatus();
 // Load all data on page load
 loadStats();
 loadEquipment();

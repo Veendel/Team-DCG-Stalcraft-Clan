@@ -9,11 +9,12 @@
 <body>
   <nav class="navbar">
     <h2>⚡ TEAM DCG</h2>
-    <div class="nav-links">
-      <span id="welcomeMsg"></span>
-      <a href="#" id="adminLink" style="display: none;">Admin Panel</a>
-      <a href="#" id="logoutBtn">Logout</a>
-    </div>
+      <div class="nav-links">
+        <span id="welcomeMsg"></span>
+        <a href="/clan-strats.html">📋 Clan Strats</a>
+        <a href="#" id="adminLink" style="display: none;">Admin Panel</a>
+        <a href="#" id="logoutBtn">Logout</a>
+      </div>
   </nav>
 
   <div class="container dashboard">
@@ -186,6 +187,7 @@
               <label for="shortEpinephrine">Epinephrine</label>
               <input type="number" id="shortEpinephrine" min="0" value="0">
             </div>
+            
           </div>
 
           <!-- Bonus -->
@@ -193,14 +195,35 @@
             <h3>🎁 Bonus</h3>
             <div class="consumable-item">
               <label for="bonusStomp">STOMP</label>
-              <input type="checkbox" id="bonusStomp">
+              <input type="number" id="bonusStomp" min="0" value="0">
             </div>
             <div class="consumable-item">
               <label for="bonusStrike">Strike</label>
-              <input type="checkbox" id="bonusStrike">
+              <input type="number" id="bonusStrike" min="0" value="0">
             </div>
           </div>
+            
+          </div>
+      <!-- Clan War Registration Section (NEW) -->
+          <div class="card">
+            <h2>⚔️ Clan War Registration</h2>
+            <p style="color: var(--dcg-text-dim); margin-bottom: 20px;">
+              Will you participate in today's clan war?
+            </p>
 
+            <div style="display: flex; gap: 20px; justify-content: center;">
+              <button id="registerYes" class="btn btn-primary" style="flex: 1;">
+                ✅ YES - I'm Ready!
+              </button>
+              <button id="registerNo" class="btn btn-secondary" style="flex: 1;">
+                ❌ NO - Can't Make It
+              </button>
+            </div>
+          
+            <div id="clanWarStatus" style="margin-top: 20px; padding: 15px; border-radius: 8px; text-align: center; display: none;"></div>
+          </div>
+        
+          <!-- Existing consumables card below... -->
         </div>
 
         <button type="submit" class="btn btn-primary" style="margin-top: 20px; width: 100%;">Update Consumables</button>

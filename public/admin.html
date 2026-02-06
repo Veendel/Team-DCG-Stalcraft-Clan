@@ -11,6 +11,7 @@
     <h2>⚡ TEAM DCG - ADMIN PANEL</h2>
     <div class="nav-links">
       <span id="totalUsers">Loading...</span>
+      <a href="/clan-strats.html">📋 Clan Strats</a>
       <a href="/dashboard.html">My Dashboard</a>
       <a href="#" id="logoutBtn">Logout</a>
     </div>
@@ -45,6 +46,7 @@
       <button class="btn btn-secondary" id="exportBtn">📥 Export All Data</button>
       <button class="btn btn-secondary" id="statsViewBtn">📊 Stats View</button>
       <button class="btn btn-secondary" id="consumablesViewBtn">💊 Consumables View</button>
+      <button class="btn btn-secondary" id="clanWarViewBtn">⚔️ Clan War View</button>
     </div>
 
     <div id="message" class="success"></div>
@@ -56,24 +58,24 @@
         <input type="text" id="searchInput" placeholder="🔍 Search members...">
       </div>
       
-      <div class="table-wrapper">
-        <table id="statsTable">
+      <div class="admin-table-wrapper">
+        <table id="statsTable" class="admin-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Username</th>
-              <th>In-Game Name</th>
-              <th>Discord</th>
-              <th>Role</th>
-              <th>Kills</th>
-              <th>Deaths</th>
-              <th>K/D</th>
-              <th>Weapons</th>
-              <th>Armors</th>
-              <th>Artifacts</th>
-              <th>Image</th>
-              <th>Joined</th>
-              <th>Actions</th>
+              <th style="min-width: 50px;">ID</th>
+              <th style="min-width: 120px;">Username</th>
+              <th style="min-width: 150px;">In-Game</th>
+              <th style="min-width: 150px;">Discord</th>
+              <th style="min-width: 80px;">Role</th>
+              <th style="min-width: 80px;">Kills</th>
+              <th style="min-width: 80px;">Deaths</th>
+              <th style="min-width: 80px;">K/D</th>
+              <th style="min-width: 200px;">Weapons</th>
+              <th style="min-width: 200px;">Armors</th>
+              <th style="min-width: 200px;">Artifacts</th>
+              <th style="min-width: 100px;">Image</th>
+              <th style="min-width: 120px;">Joined</th>
+              <th style="min-width: 150px;">Actions</th>
             </tr>
           </thead>
           <tbody id="statsBody">
@@ -92,11 +94,11 @@
         <input type="text" id="searchInput2" placeholder="🔍 Search members...">
       </div>
       
-      <div class="table-wrapper">
-        <table id="consumablesTable">
+      <div class="admin-table-wrapper">
+        <table id="consumablesTable" class="admin-table">
           <thead>
             <tr>
-              <th>Member</th>
+              <th style="min-width: 120px;">Member</th>
               <th colspan="4" style="background: #1a1a1a;">💣 Grenades</th>
               <th colspan="7" style="background: #1a1a1a;">⚡ Enhancement</th>
               <th colspan="6" style="background: #1a1a1a;">🏃 Mobility</th>
@@ -105,39 +107,74 @@
             </tr>
             <tr>
               <th>Username</th>
-              <!-- Grenades -->
-              <th>Plantain</th>
+              <th>Plant</th>
               <th>Napalm</th>
-              <th>Thunder</th>
+              <th>Thund</th>
               <th>Frost</th>
-              <!-- Enhancement -->
-              <th>Solyanka</th>
-              <th>Garlic</th>
+              <th>Sol</th>
+              <th>Gar</th>
               <th>Pea</th>
-              <th>Lingon</th>
-              <th>Frosty</th>
-              <th>Alcobull</th>
-              <th>Geyser</th>
-              <!-- Mobility -->
+              <th>Ling</th>
+              <th>Fros</th>
+              <th>Alco</th>
+              <th>Geys</th>
               <th>Grog</th>
-              <th>Strength</th>
-              <th>Neuro</th>
-              <th>Battery</th>
+              <th>Str</th>
+              <th>Neur</th>
+              <th>Batt</th>
               <th>SALT</th>
-              <th>ATLAS</th>
-              <!-- Short-term -->
-              <th>Painkiller</th>
-              <th>Schizo</th>
-              <th>Morphine</th>
+              <th>ATLS</th>
+              <th>Pain</th>
+              <th>Schz</th>
+              <th>Morp</th>
               <th>Epi</th>
-              <!-- Bonus -->
-              <th>STOMP</th>
-              <th>Strike</th>
+              <th>STMP</th>
+              <th>STRK</th>
             </tr>
           </thead>
           <tbody id="consumablesBody">
             <tr>
               <td colspan="24" style="text-align: center;">Loading data...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CLAN WAR VIEW (NEW) -->
+    <div id="clanWarView" class="card" style="display: none;">
+      <div class="table-header">
+        <h2>⚔️ Today's Clan War Registrations</h2>
+      </div>
+
+      <div class="clan-war-summary">
+        <div class="war-stat">
+          <span class="war-label">✅ Registered (Yes):</span>
+          <span class="war-number" id="warYesCount">0</span>
+        </div>
+        <div class="war-stat">
+          <span class="war-label">❌ Not Participating:</span>
+          <span class="war-number" id="warNoCount">0</span>
+        </div>
+        <div class="war-stat">
+          <span class="war-label">⏳ No Response:</span>
+          <span class="war-number" id="warNoResponseCount">0</span>
+        </div>
+      </div>
+
+      <div class="admin-table-wrapper">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>In-Game Name</th>
+              <th>Status</th>
+              <th>Registered At</th>
+            </tr>
+          </thead>
+          <tbody id="clanWarBody">
+            <tr>
+              <td colspan="4" style="text-align: center;">Loading data...</td>
             </tr>
           </tbody>
         </table>
