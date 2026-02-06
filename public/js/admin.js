@@ -172,7 +172,7 @@ function displayClanWarView(registrations) {
   const noCount = registrations.filter(r => r.registered === false).length;
   const noResponseCount = allUsersData.length - registrations.length;
 
-  document.getElementById('warYesCount').textContent = yesCount -1;
+  document.getElementById('warYesCount').textContent = yesCount;
   document.getElementById('warNoCount').textContent = noCount;
   document.getElementById('warNoResponseCount').textContent = noResponseCount;
 
@@ -525,4 +525,5 @@ document.getElementById('searchInput').addEventListener('keyup', filterTable);
 document.getElementById('searchInput2').addEventListener('keyup', filterConsumablesTable);
 
 // Load data on page load
+
 loadUsers();
