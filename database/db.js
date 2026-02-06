@@ -1,39 +1,32 @@
+// database/db.js
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 
-const { Pool } = require('pg');
-const bcrypt = require('bcrypt');
-
+// Safety check so it never silently falls back to localhost
 if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL is not set');
+  throw new Error('❌ DATABASE_URL is not set');
 }
 
+// Create PostgreSQL pool (Render requires SSL)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
-
-module.exports = pool;
-
 
 // Test connection
-pool.connect((err, client, release) => {
-  if (err) {
-    console.error('❌ Database connection error:', err.stack);
-  } else {
-    console.log('✓ Connected to PostgreSQL database');
-    release();
-  }
-});
+pool.query('SELECT 1')
+  .then(() => console.log('✓ Connected to Render PostgreSQL'))
+  .catch(err => console.error('❌ Database connection error:', err));
 
 // Initialize database tables
 const initializeDatabase = async () => {
   const client = await pool.connect();
-  
+
   try {
     await client.query('BEGIN');
 
-    // Users table
     await client.query(`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
@@ -44,7 +37,6 @@ const initializeDatabase = async () => {
       )
     `);
 
-    // Player stats table
     await client.query(`
       CREATE TABLE IF NOT EXISTS player_stats (
         id SERIAL PRIMARY KEY,
@@ -56,7 +48,6 @@ const initializeDatabase = async () => {
       )
     `);
 
-    // Equipment table
     await client.query(`
       CREATE TABLE IF NOT EXISTS equipment (
         id SERIAL PRIMARY KEY,
@@ -68,7 +59,6 @@ const initializeDatabase = async () => {
       )
     `);
 
-    // Consumables table (STRIKE and STOMP now countable)
     await client.query(`
       CREATE TABLE IF NOT EXISTS consumables (
         id SERIAL PRIMARY KEY,
@@ -99,7 +89,6 @@ const initializeDatabase = async () => {
       )
     `);
 
-    // Clan war registration table (NEW - resets daily)
     await client.query(`
       CREATE TABLE IF NOT EXISTS clan_war_registration (
         id SERIAL PRIMARY KEY,
@@ -111,7 +100,6 @@ const initializeDatabase = async () => {
       )
     `);
 
-    // Clan strats images table (NEW)
     await client.query(`
       CREATE TABLE IF NOT EXISTS clan_strats (
         id SERIAL PRIMARY KEY,
@@ -123,14 +111,15 @@ const initializeDatabase = async () => {
       )
     `);
 
-    await client.query('COMMIT');
+    // Create default admin user (only once)
+    const adminCheck = await client.query(
+      'SELECT id FROM users WHERE username = $1',
+      ['admin']
+    );
 
-    // Create default admin user
-    const adminCheck = await client.query('SELECT id FROM users WHERE username = $1', ['admin']);
-    
     if (adminCheck.rows.length === 0) {
       const adminPassword = await bcrypt.hash(
-        process.env.ADMIN_PASSWORD,
+        process.env.ADMIN_PASSWORD || 'change-me',
         10
       );
 
@@ -138,27 +127,26 @@ const initializeDatabase = async () => {
         'INSERT INTO users (username, password, role) VALUES ($1, $2, $3) RETURNING id',
         ['admin', adminPassword, 'admin']
       );
-      
+
       const adminId = result.rows[0].id;
 
-      // Create default records for admin
       await client.query('INSERT INTO player_stats (user_id) VALUES ($1)', [adminId]);
       await client.query('INSERT INTO equipment (user_id) VALUES ($1)', [adminId]);
       await client.query('INSERT INTO consumables (user_id) VALUES ($1)', [adminId]);
-      
-      console.log('✓ Default admin user created (username: admin, password: admin123)');
+
+      console.log('✓ Default admin user created');
     }
 
-  } catch (error) {
+    await client.query('COMMIT');
+  } catch (err) {
     await client.query('ROLLBACK');
-    console.error('Database initialization error:', error);
+    console.error('❌ Database initialization error:', err);
   } finally {
     client.release();
   }
 };
 
-// Initialize database
+// Run initialization
 initializeDatabase();
 
 module.exports = pool;
-
