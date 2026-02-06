@@ -123,7 +123,11 @@ const initializeDatabase = async () => {
     const adminCheck = await client.query('SELECT id FROM users WHERE username = $1', ['admin']);
     
     if (adminCheck.rows.length === 0) {
-      const adminPassword = await bcrypt.hash('admin123', 10);
+      const adminPassword = await bcrypt.hash(
+        process.env.ADMIN_PASSWORD,
+        10
+      );
+
       const result = await client.query(
         'INSERT INTO users (username, password, role) VALUES ($1, $2, $3) RETURNING id',
         ['admin', adminPassword, 'admin']
