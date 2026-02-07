@@ -156,12 +156,12 @@ This tool is created by fans, for fans, to help manage clan activities.
 
 If you encounter any issues or have questions:
 
-1. Check the [Issues](https://github.com/YOUR-USERNAME/team-dcg-tracker/issues) page
-2. Open a new issue if yours isn't already listed
-3. Contact on Discord: [veendel]
+1. Open a new issue if yours isn't already listed
+2. Contact on Discord: [veendel]
 
 ---
 
 
 **⚡ Good hunting, Stalkers! ⚡**
+
 
