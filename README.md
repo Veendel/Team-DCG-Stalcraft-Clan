@@ -129,17 +129,6 @@ team-dcg-tracker/
 | short_* | INTEGER | Short-term item counts |
 | bonus_* | BOOLEAN | Bonus items (STOMP, Strike) |
 
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ---
 
@@ -152,18 +141,6 @@ Contributions are welcome! Please follow these steps:
 This is an **unofficial fan-made project** and is **NOT affiliated with, endorsed by, or connected to EXBO or the official STALCRAFT game**.
 
 This tool is created by fans, for fans, to help manage clan activities.
-
----
-
-## 📄 License
-
-MIT License - See [LICENSE](LICENSE) file for details
-
----
-
-## 👥 Authors
-
-**Your Name** - *Initial work* - [YourGitHub](https://github.com/YOUR-USERNAME)
 
 ---
 
@@ -181,9 +158,10 @@ If you encounter any issues or have questions:
 
 1. Check the [Issues](https://github.com/YOUR-USERNAME/team-dcg-tracker/issues) page
 2. Open a new issue if yours isn't already listed
-3. Contact on Discord: [Your Discord]
+3. Contact on Discord: [veendel]
 
 ---
 
 
 **⚡ Good hunting, Stalkers! ⚡**
+
