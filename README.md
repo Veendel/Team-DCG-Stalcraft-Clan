@@ -31,7 +31,7 @@
 **Backend:**
 - Node.js
 - Express.js
-- SQLite3
+- PostgreSQL
 - JWT (JSON Web Tokens)
 - Bcrypt
 
@@ -42,82 +42,6 @@
 - Content Security Policy (CSP)
 
 ---
-
-## 📦 Installation
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) v18 or higher
-- npm (comes with Node.js)
-- Git
-
-### Setup
-
-1. **Clone the repository**
-```bash
-   git clone https://github.com/YOUR-USERNAME/team-dcg-tracker.git
-   cd team-dcg-tracker
-```
-
-2. **Install dependencies**
-```bash
-   npm install
-```
-
-3. **Set up environment variables**
-```bash
-   cp .env.example .env
-```
-   
-   Edit `.env` and change the JWT_SECRET to a secure random string:
-```env
-   JWT_SECRET=your-super-secret-random-string-here-make-it-long-and-secure
-   PORT=3000
-```
-
-4. **Start the server**
-```bash
-   npm start
-```
-
-5. **Open your browser**
-```
-   http://localhost:3000
-```
-
----
-
-## 🔑 Default Admin Account
-
-**⚠️ IMPORTANT: Change this password immediately after first login!**
-```
-Username: admin
-Password: admin123
-```
-
----
-
-## 📚 Usage
-
-### For Clan Members:
-
-1. Register an account or login
-2. Update your player stats (in-game name, Discord, kills, deaths)
-3. Add your equipment loadout
-4. Upload artifact build screenshots
-5. Track your consumables inventory
-
-### For Clan Leaders (Admin):
-
-1. Login with admin account
-2. Access the Admin Panel
-3. View all member stats and equipment
-4. Toggle between Stats View and Consumables View
-5. Export data to CSV
-6. Manage members (view/delete)
-
----
-
 ## 🗂️ Project Structure
 ```
 team-dcg-tracker/
@@ -219,22 +143,6 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📝 Development Roadmap
-
-- [ ] Add password reset functionality
-- [ ] Implement real-time updates with WebSockets
-- [ ] Add clan leaderboards
-- [ ] Create mobile app version
-- [ ] Add multi-language support
-- [ ] Integrate with STALCRAFT API (if available)
-- [ ] Add activity logs and audit trails
-- [ ] Implement role-based permissions (officer, member, recruit)
-
----
-
-## 🐛 Known Issues
-
-- Image uploads larger than 5MB may cause issues
 - Safari may have CSP-related console warnings (non-breaking)
 
 ---
@@ -276,5 +184,6 @@ If you encounter any issues or have questions:
 3. Contact on Discord: [Your Discord]
 
 ---
+
 
 **⚡ Good hunting, Stalkers! ⚡**
