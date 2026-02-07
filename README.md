@@ -58,12 +58,14 @@ team-dcg-tracker/
 │   ├── login.html            # Login page
 │   ├── register.html         # Registration page
 │   ├── dashboard.html        # Member dashboard
+│   ├── clan-strats.html      # Clan strats
 │   ├── admin.html            # Admin panel
 │   ├── css/
 │   │   └── style.css         # Team DCG dark theme styles
 │   └── js/
 │       ├── auth.js           # Client-side auth logic
 │       ├── dashboard.js      # Dashboard functionality
+│       ├── clan-strats.js    
 │       └── admin.js          # Admin panel functionality
 ├── .env.example              # Environment variables template
 ├── .gitignore                # Git ignore file
@@ -163,5 +165,6 @@ If you encounter any issues or have questions:
 
 
 **⚡ Good hunting, Stalkers! ⚡**
+
 
 
