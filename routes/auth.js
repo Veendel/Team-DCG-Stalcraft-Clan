@@ -4,13 +4,10 @@ const jwt = require('jsonwebtoken');
 const pool = require('../database/db');
 const router = express.Router();
 
-// Import security middleware
+// Import only what exists
 const {
   authLimiter,
   registerLimiter,
-  validateRegistration,
-  validateLogin,
-  checkValidation,
   trackFailedLogin,
   clearFailedAttempts,
   isAccountLocked
@@ -21,11 +18,22 @@ const {
 // ============================================
 
 router.post('/register', 
-  registerLimiter,      // Make sure this is defined
-  validateRegistration, // Make sure this is defined
-  checkValidation,      // Make sure this is defined
+  registerLimiter,
   async (req, res) => {
     const { username, password } = req.body;
+
+    // Basic validation
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password required' });
+    }
+
+    if (username.length < 3 || username.length > 50) {
+      return res.status(400).json({ error: 'Username must be 3-50 characters' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    }
 
     try {
       // Check if username exists
@@ -69,15 +77,17 @@ router.post('/register',
 // ============================================
 
 router.post('/login',
-  authLimiter,          // Make sure this is defined
-  validateLogin,        // Make sure this is defined
-  checkValidation,      // Make sure this is defined
+  authLimiter,
   async (req, res) => {
     const { username, password } = req.body;
 
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password required' });
+    }
+
     if (isAccountLocked(username)) {
       return res.status(429).json({ 
-        error: 'Account temporarily locked due to too many failed login attempts. Try again in 15 minutes.' 
+        error: 'Account temporarily locked. Try again in 15 minutes.' 
       });
     }
 
@@ -100,7 +110,7 @@ router.post('/login',
         
         if (isLocked) {
           return res.status(429).json({ 
-            error: 'Too many failed login attempts. Account locked for 15 minutes.' 
+            error: 'Too many failed attempts. Account locked for 15 minutes.' 
           });
         }
         

@@ -127,14 +127,19 @@ const helmetConfig = helmet({
 // ============================================
 
 module.exports = {
-  authLimiter,
-  apiLimiter,
-  registerLimiter,
-  speedLimiter,
-  checkBlacklist,
-  blacklistIP,
-  trackFailedLogin,
-  clearFailedAttempts,
-  isAccountLocked,
-  helmetConfig
+  authLimiter,              // ← Must be defined
+  apiLimiter,               // ← Must be defined
+  registerLimiter,          // ← Must be defined
+  speedLimiter,             // ← Must be defined
+  validateRegistration,     // ← Must be defined
+  validateLogin,            // ← Must be defined
+  validateStats,            // ← Must be defined
+  validateEquipment,        // ← Must be defined
+  checkValidation,          // ← Must be defined
+  checkBlacklist,           // ← Must be defined
+  blacklistIP,              // ← Must be defined
+  trackFailedLogin,         // ← Must be defined
+  clearFailedAttempts,      // ← Must be defined
+  isAccountLocked,          // ← Must be defined
+  helmetConfig              // ← Must be defined
 };
