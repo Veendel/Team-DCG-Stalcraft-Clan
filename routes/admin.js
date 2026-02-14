@@ -97,7 +97,12 @@ router.delete('/users/:id', verifyToken, verifyAdmin, async (req, res) => {
 router.put('/consumables/:userId', verifyToken, async (req, res) => {
   try {
     const userId = req.params.userId;
-    const consumables = req.body;
+    const c = req.body; // Shorter variable name
+
+    console.log('=== CONSUMABLES UPDATE ===');
+    console.log('User:', userId);
+    console.log('STOMP:', c.bonus_stomp);
+    console.log('STRIKE:', c.bonus_strike);
 
     if (req.user.id !== parseInt(userId) && req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Access denied' });
@@ -106,33 +111,76 @@ router.put('/consumables/:userId', verifyToken, async (req, res) => {
     const check = await pool.query('SELECT id FROM consumables WHERE user_id = $1', [userId]);
 
     if (check.rows.length > 0) {
-      await pool.query(
+      // UPDATE existing record
+      const result = await pool.query(
         `UPDATE consumables SET
-         nade_plantain = $1, nade_napalm = $2, nade_thunder = $3, nade_frost = $4,
-         nade_tarmac = $5, nade_sickness = $6, nade_stinky = $7,
-         enh_solyanka = $8, enh_garlic_soup = $9, enh_pea_soup = $10, enh_lingonberry = $11,
-         enh_frosty = $12, enh_alcobull = $13, enh_geyser_vodka = $14,
-         mob_grog = $15, mob_strength_stimulator = $16, mob_neurotonic = $17, mob_battery = $18,
-         mob_salt = $19, mob_atlas = $20,
-         short_painkiller = $21, short_schizoyorsh = $22, short_morphine = $23, short_epinephrine = $24,
-         bonus_stomp = $25, bonus_strike = $26
-         WHERE user_id = $27`,
+         nade_plantain = $1,
+         nade_napalm = $2,
+         nade_thunder = $3,
+         nade_frost = $4,
+         nade_tarmac = $5,
+         nade_sickness = $6,
+         nade_stinky = $7,
+         enh_solyanka = $8,
+         enh_garlic_soup = $9,
+         enh_pea_soup = $10,
+         enh_lingonberry = $11,
+         enh_frosty = $12,
+         enh_alcobull = $13,
+         enh_geyser_vodka = $14,
+         mob_grog = $15,
+         mob_strength_stimulator = $16,
+         mob_neurotonic = $17,
+         mob_battery = $18,
+         mob_salt = $19,
+         mob_atlas = $20,
+         short_painkiller = $21,
+         short_schizoyorsh = $22,
+         short_morphine = $23,
+         short_epinephrine = $24,
+         bonus_stomp = $25,
+         bonus_strike = $26
+         WHERE user_id = $27
+         RETURNING *`,
         [
-          consumables.nade_plantain, consumables.nade_napalm, consumables.nade_thunder, consumables.nade_frost,
-          consumables.nade_tarmac, consumables.nade_sickness, consumables.nade_stinky,
-          consumables.enh_solyanka, consumables.enh_garlic_soup, consumables.enh_pea_soup, consumables.enh_lingonberry,
-          consumables.enh_frosty, consumables.enh_alcobull, consumables.enh_geyser_vodka,
-          consumables.mob_grog, consumables.mob_strength_stimulator, consumables.mob_neurotonic, consumables.mob_battery,
-          consumables.mob_salt, consumables.mob_atlas,
-          consumables.short_painkiller, consumables.short_schizoyorsh, consumables.short_morphine, consumables.short_epinephrine,
-          consumables.bonus_stomp, consumables.bonus_strike,
+          c.nade_plantain || 0,
+          c.nade_napalm || 0,
+          c.nade_thunder || 0,
+          c.nade_frost || 0,
+          c.nade_tarmac || 0,
+          c.nade_sickness || 0,
+          c.nade_stinky || 0,
+          c.enh_solyanka || 0,
+          c.enh_garlic_soup || 0,
+          c.enh_pea_soup || 0,
+          c.enh_lingonberry || 0,
+          c.enh_frosty || 0,
+          c.enh_alcobull || 0,
+          c.enh_geyser_vodka || 0,
+          c.mob_grog || 0,
+          c.mob_strength_stimulator || 0,
+          c.mob_neurotonic || 0,
+          c.mob_battery || 0,
+          c.mob_salt || 0,
+          c.mob_atlas || 0,
+          c.short_painkiller || 0,
+          c.short_schizoyorsh || 0,
+          c.short_morphine || 0,
+          c.short_epinephrine || 0,
+          c.bonus_stomp || 0,
+          c.bonus_strike || 0,
           userId
         ]
       );
+
+      console.log('Updated! STOMP:', result.rows[0].bonus_stomp, 'STRIKE:', result.rows[0].bonus_strike);
+
     } else {
+      // INSERT new record
       await pool.query(
         `INSERT INTO consumables (
-          user_id, nade_plantain, nade_napalm, nade_thunder, nade_frost,
+          user_id,
+          nade_plantain, nade_napalm, nade_thunder, nade_frost,
           nade_tarmac, nade_sickness, nade_stinky,
           enh_solyanka, enh_garlic_soup, enh_pea_soup, enh_lingonberry,
           enh_frosty, enh_alcobull, enh_geyser_vodka,
@@ -140,24 +188,52 @@ router.put('/consumables/:userId', verifyToken, async (req, res) => {
           mob_salt, mob_atlas,
           short_painkiller, short_schizoyorsh, short_morphine, short_epinephrine,
           bonus_stomp, bonus_strike
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27)`,
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,
+          $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27
+        )`,
         [
           userId,
-          consumables.nade_plantain, consumables.nade_napalm, consumables.nade_thunder, consumables.nade_frost,
-          consumables.nade_tarmac, consumables.nade_sickness, consumables.nade_stinky,
-          consumables.enh_solyanka, consumables.enh_garlic_soup, consumables.enh_pea_soup, consumables.enh_lingonberry,
-          consumables.enh_frosty, consumables.enh_alcobull, consumables.enh_geyser_vodka,
-          consumables.mob_grog, consumables.mob_strength_stimulator, consumables.mob_neurotonic, consumables.mob_battery,
-          consumables.mob_salt, consumables.mob_atlas,
-          consumables.short_painkiller, consumables.short_schizoyorsh, consumables.short_morphine, consumables.short_epinephrine,
-          consumables.bonus_stomp, consumables.bonus_strike
+          c.nade_plantain || 0,
+          c.nade_napalm || 0,
+          c.nade_thunder || 0,
+          c.nade_frost || 0,
+          c.nade_tarmac || 0,
+          c.nade_sickness || 0,
+          c.nade_stinky || 0,
+          c.enh_solyanka || 0,
+          c.enh_garlic_soup || 0,
+          c.enh_pea_soup || 0,
+          c.enh_lingonberry || 0,
+          c.enh_frosty || 0,
+          c.enh_alcobull || 0,
+          c.enh_geyser_vodka || 0,
+          c.mob_grog || 0,
+          c.mob_strength_stimulator || 0,
+          c.mob_neurotonic || 0,
+          c.mob_battery || 0,
+          c.mob_salt || 0,
+          c.mob_atlas || 0,
+          c.short_painkiller || 0,
+          c.short_schizoyorsh || 0,
+          c.short_morphine || 0,
+          c.short_epinephrine || 0,
+          c.bonus_stomp || 0,
+          c.bonus_strike || 0
         ]
       );
+
+      console.log('Created!');
     }
 
     res.json({ message: 'Consumables updated successfully' });
+
   } catch (error) {
-    console.error('Error updating consumables:', error);
+    console.error('=== CONSUMABLES ERROR ===');
+    console.error('Error message:', error.message);
+    console.error('Error code:', error.code);
+    console.error('Full error:', error);
+    console.error('=========================');
     res.status(500).json({ error: 'Failed to update consumables' });
   }
 });
