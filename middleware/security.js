@@ -3,12 +3,12 @@ const slowDown = require('express-slow-down');
 const helmet = require('helmet');
 
 // ============================================
-// RATE LIMITING
+// RATE LIMITING - PRODUCTION SETTINGS
 // ============================================
 
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 15,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 15, // 15 login attempts
   message: { error: 'Too many login attempts. Please try again in 15 minutes.' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -16,25 +16,25 @@ const authLimiter = rateLimit({
 });
 
 const apiLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  max: 200,
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 200, // 200 requests per minute
   message: { error: 'Too many requests. Please slow down.' },
   standardHeaders: true,
   legacyHeaders: false
 });
 
 const registerLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 20,
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 20, // 20 registrations per hour
   message: { error: 'Too many accounts created from this IP. Please try again in 1 hour.' },
   standardHeaders: true,
   legacyHeaders: false
 });
 
 const speedLimiter = slowDown({
-  windowMs: 15 * 60 * 1000,
-  delayAfter: 50,
-  delayMs: 200
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  delayAfter: 50, // Allow 50 requests at full speed
+  delayMs: 200 // Add 200ms delay per request after that
 });
 
 // ============================================
@@ -46,6 +46,7 @@ const failedAttempts = new Map();
 function trackFailedLogin(username) {
   const attempts = failedAttempts.get(username) || { count: 0, firstAttempt: Date.now() };
   
+  // Reset counter after 15 minutes
   if (Date.now() - attempts.firstAttempt > 15 * 60 * 1000) {
     attempts.count = 0;
     attempts.firstAttempt = Date.now();
@@ -54,6 +55,7 @@ function trackFailedLogin(username) {
   attempts.count++;
   failedAttempts.set(username, attempts);
   
+  // Lock account after 5 failed attempts
   if (attempts.count >= 5) {
     console.log(`⚠️  Account locked: ${username} (too many failed attempts)`);
     return true;
@@ -70,6 +72,7 @@ function isAccountLocked(username) {
   const attempts = failedAttempts.get(username);
   if (!attempts) return false;
   
+  // Reset after 15 minutes
   if (Date.now() - attempts.firstAttempt > 15 * 60 * 1000) {
     failedAttempts.delete(username);
     return false;
@@ -123,23 +126,18 @@ const helmetConfig = helmet({
 });
 
 // ============================================
-// EXPORTS
+// EXPORTS (NO VALIDATION FUNCTIONS)
 // ============================================
 
 module.exports = {
-  authLimiter,              // ← Must be defined
-  apiLimiter,               // ← Must be defined
-  registerLimiter,          // ← Must be defined
-  speedLimiter,             // ← Must be defined
-  validateRegistration,     // ← Must be defined
-  validateLogin,            // ← Must be defined
-  validateStats,            // ← Must be defined
-  validateEquipment,        // ← Must be defined
-  checkValidation,          // ← Must be defined
-  checkBlacklist,           // ← Must be defined
-  blacklistIP,              // ← Must be defined
-  trackFailedLogin,         // ← Must be defined
-  clearFailedAttempts,      // ← Must be defined
-  isAccountLocked,          // ← Must be defined
-  helmetConfig              // ← Must be defined
+  authLimiter,
+  apiLimiter,
+  registerLimiter,
+  speedLimiter,
+  checkBlacklist,
+  blacklistIP,
+  trackFailedLogin,
+  clearFailedAttempts,
+  isAccountLocked,
+  helmetConfig
 };
