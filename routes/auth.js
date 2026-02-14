@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const pool = require('../database/db');
 const router = express.Router();
+
+// Import security middleware
 const {
   authLimiter,
   registerLimiter,
@@ -19,9 +21,9 @@ const {
 // ============================================
 
 router.post('/register', 
-  registerLimiter,
-  validateRegistration,
-  checkValidation,
+  registerLimiter,      // Make sure this is defined
+  validateRegistration, // Make sure this is defined
+  checkValidation,      // Make sure this is defined
   async (req, res) => {
     const { username, password } = req.body;
 
@@ -67,9 +69,9 @@ router.post('/register',
 // ============================================
 
 router.post('/login',
-  authLimiter,
-  validateLogin,
-  checkValidation,
+  authLimiter,          // Make sure this is defined
+  validateLogin,        // Make sure this is defined
+  checkValidation,      // Make sure this is defined
   async (req, res) => {
     const { username, password } = req.body;
 
