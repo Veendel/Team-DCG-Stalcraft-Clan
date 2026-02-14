@@ -79,11 +79,14 @@ async function loadConsumables() {
     if (response.ok) {
       const consumables = await response.json();
       
-      // Grenades
+      // Grenades (UPDATED)
       document.getElementById('nadePlantain').value = consumables.nade_plantain || 0;
       document.getElementById('nadeNapalm').value = consumables.nade_napalm || 0;
       document.getElementById('nadeThunder').value = consumables.nade_thunder || 0;
       document.getElementById('nadeFrost').value = consumables.nade_frost || 0;
+      document.getElementById('nadeTarmac').value = consumables.nade_tarmac || 0;
+      document.getElementById('nadeSickness').value = consumables.nade_sickness || 0;
+      document.getElementById('nadeStinky').value = consumables.nade_stinky || 0;
       
       // Enhancement
       document.getElementById('enhSolyanka').value = consumables.enh_solyanka || 0;
@@ -251,6 +254,9 @@ document.getElementById('consumablesForm').addEventListener('submit', async (e) 
     nade_napalm: parseInt(document.getElementById('nadeNapalm').value),
     nade_thunder: parseInt(document.getElementById('nadeThunder').value),
     nade_frost: parseInt(document.getElementById('nadeFrost').value),
+    nade_tarmac: parseInt(document.getElementById('nadeTarmac').value),
+    nade_sickness: parseInt(document.getElementById('nadeSickness').value),
+    nade_stinky: parseInt(document.getElementById('nadeStinky').value),
     
     enh_solyanka: parseInt(document.getElementById('enhSolyanka').value),
     enh_garlic_soup: parseInt(document.getElementById('enhGarlicSoup').value),

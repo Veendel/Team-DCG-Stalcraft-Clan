@@ -59,35 +59,39 @@ const initializeDatabase = async () => {
       )
     `);
 
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS consumables (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        nade_plantain INTEGER DEFAULT 0,
-        nade_napalm INTEGER DEFAULT 0,
-        nade_thunder INTEGER DEFAULT 0,
-        nade_frost INTEGER DEFAULT 0,
-        enh_solyanka INTEGER DEFAULT 0,
-        enh_garlic_soup INTEGER DEFAULT 0,
-        enh_pea_soup INTEGER DEFAULT 0,
-        enh_lingonberry INTEGER DEFAULT 0,
-        enh_frosty INTEGER DEFAULT 0,
-        enh_alcobull INTEGER DEFAULT 0,
-        enh_geyser_vodka INTEGER DEFAULT 0,
-        mob_grog INTEGER DEFAULT 0,
-        mob_strength_stimulator INTEGER DEFAULT 0,
-        mob_neurotonic INTEGER DEFAULT 0,
-        mob_battery INTEGER DEFAULT 0,
-        mob_salt INTEGER DEFAULT 0,
-        mob_atlas INTEGER DEFAULT 0,
-        short_painkiller INTEGER DEFAULT 0,
-        short_schizoyorsh INTEGER DEFAULT 0,
-        short_morphine INTEGER DEFAULT 0,
-        short_epinephrine INTEGER DEFAULT 0,
-        bonus_stomp INTEGER DEFAULT 0,
-        bonus_strike INTEGER DEFAULT 0
-      )
-    `);
+// Consumables table (ADD NEW GRENADES)
+await client.query(`
+  CREATE TABLE IF NOT EXISTS consumables (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    nade_plantain INTEGER DEFAULT 0,
+    nade_napalm INTEGER DEFAULT 0,
+    nade_thunder INTEGER DEFAULT 0,
+    nade_frost INTEGER DEFAULT 0,
+    nade_tarmac INTEGER DEFAULT 0,
+    nade_sickness INTEGER DEFAULT 0,
+    nade_stinky INTEGER DEFAULT 0,
+    enh_solyanka INTEGER DEFAULT 0,
+    enh_garlic_soup INTEGER DEFAULT 0,
+    enh_pea_soup INTEGER DEFAULT 0,
+    enh_lingonberry INTEGER DEFAULT 0,
+    enh_frosty INTEGER DEFAULT 0,
+    enh_alcobull INTEGER DEFAULT 0,
+    enh_geyser_vodka INTEGER DEFAULT 0,
+    mob_grog INTEGER DEFAULT 0,
+    mob_strength_stimulator INTEGER DEFAULT 0,
+    mob_neurotonic INTEGER DEFAULT 0,
+    mob_battery INTEGER DEFAULT 0,
+    mob_salt INTEGER DEFAULT 0,
+    mob_atlas INTEGER DEFAULT 0,
+    short_painkiller INTEGER DEFAULT 0,
+    short_schizoyorsh INTEGER DEFAULT 0,
+    short_morphine INTEGER DEFAULT 0,
+    short_epinephrine INTEGER DEFAULT 0,
+    bonus_stomp INTEGER DEFAULT 0,
+    bonus_strike INTEGER DEFAULT 0
+  )
+`);
 
     await client.query(`
       CREATE TABLE IF NOT EXISTS clan_war_registration (

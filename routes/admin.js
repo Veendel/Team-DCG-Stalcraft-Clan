@@ -29,6 +29,9 @@ router.get('/users', verifyToken, verifyAdmin, async (req, res) => {
         c.nade_napalm,
         c.nade_thunder,
         c.nade_frost,
+        c.nade_tarmac,
+        c.nade_sickness,
+        c.nade_stinky,
         c.enh_solyanka,
         c.enh_garlic_soup,
         c.enh_pea_soup,
@@ -91,151 +94,71 @@ router.delete('/users/:id', verifyToken, verifyAdmin, async (req, res) => {
 // UPDATE USER ROLE (NEW)
 // ============================================
 
-router.put('/users/:id/role', verifyToken, verifyAdmin, async (req, res) => {
-  try {
-    const userId = req.params.id;
-    const { role } = req.body;
-
-    if (!['user', 'admin'].includes(role)) {
-      return res.status(400).json({ error: 'Invalid role' });
-    }
-
-    const result = await pool.query(
-      'UPDATE users SET role = $1 WHERE id = $2 RETURNING username, role',
-      [role, userId]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    console.log(`✓ Role updated: ${result.rows[0].username} → ${role}`);
-    res.json({ message: 'Role updated successfully', user: result.rows[0] });
-  } catch (error) {
-    console.error('Role update error:', error);
-    res.status(500).json({ error: 'Failed to update role' });
-  }
-});
-
-// ============================================
-// GET PLAYER STATS
-// ============================================
-
-router.get('/stats/:userId', verifyToken, async (req, res) => {
+router.put('/consumables/:userId', verifyToken, async (req, res) => {
   try {
     const userId = req.params.userId;
+    const consumables = req.body;
 
     if (req.user.id !== parseInt(userId) && req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    const result = await pool.query(
-      'SELECT * FROM player_stats WHERE user_id = $1',
-      [userId]
-    );
-
-    res.json(result.rows[0] || {});
-  } catch (error) {
-    console.error('Error fetching stats:', error);
-    res.status(500).json({ error: 'Failed to fetch stats' });
-  }
-});
-
-// ============================================
-// UPDATE PLAYER STATS
-// ============================================
-
-router.put('/stats/:userId', verifyToken, async (req, res) => {
-  try {
-    const userId = req.params.userId;
-    const { ingame_name, discord_name, kills, deaths } = req.body;
-
-    if (req.user.id !== parseInt(userId) && req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Access denied' });
-    }
-
-    const check = await pool.query('SELECT id FROM player_stats WHERE user_id = $1', [userId]);
+    const check = await pool.query('SELECT id FROM consumables WHERE user_id = $1', [userId]);
 
     if (check.rows.length > 0) {
       await pool.query(
-        `UPDATE player_stats 
-         SET ingame_name = $1, discord_name = $2, kills = $3, deaths = $4
-         WHERE user_id = $5`,
-        [ingame_name, discord_name, kills, deaths, userId]
+        `UPDATE consumables SET
+         nade_plantain = $1, nade_napalm = $2, nade_thunder = $3, nade_frost = $4,
+         nade_tarmac = $5, nade_sickness = $6, nade_stinky = $7,
+         enh_solyanka = $8, enh_garlic_soup = $9, enh_pea_soup = $10, enh_lingonberry = $11,
+         enh_frosty = $12, enh_alcobull = $13, enh_geyser_vodka = $14,
+         mob_grog = $15, mob_strength_stimulator = $16, mob_neurotonic = $17, mob_battery = $18,
+         mob_salt = $19, mob_atlas = $20,
+         short_painkiller = $21, short_schizoyorsh = $22, short_morphine = $23, short_epinephrine = $24,
+         bonus_stomp = $25, bonus_strike = $26
+         WHERE user_id = $27`,
+        [
+          consumables.nade_plantain, consumables.nade_napalm, consumables.nade_thunder, consumables.nade_frost,
+          consumables.nade_tarmac, consumables.nade_sickness, consumables.nade_stinky,
+          consumables.enh_solyanka, consumables.enh_garlic_soup, consumables.enh_pea_soup, consumables.enh_lingonberry,
+          consumables.enh_frosty, consumables.enh_alcobull, consumables.enh_geyser_vodka,
+          consumables.mob_grog, consumables.mob_strength_stimulator, consumables.mob_neurotonic, consumables.mob_battery,
+          consumables.mob_salt, consumables.mob_atlas,
+          consumables.short_painkiller, consumables.short_schizoyorsh, consumables.short_morphine, consumables.short_epinephrine,
+          consumables.bonus_stomp, consumables.bonus_strike,
+          userId
+        ]
       );
     } else {
       await pool.query(
-        `INSERT INTO player_stats (user_id, ingame_name, discord_name, kills, deaths)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [userId, ingame_name, discord_name, kills, deaths]
+        `INSERT INTO consumables (
+          user_id, nade_plantain, nade_napalm, nade_thunder, nade_frost,
+          nade_tarmac, nade_sickness, nade_stinky,
+          enh_solyanka, enh_garlic_soup, enh_pea_soup, enh_lingonberry,
+          enh_frosty, enh_alcobull, enh_geyser_vodka,
+          mob_grog, mob_strength_stimulator, mob_neurotonic, mob_battery,
+          mob_salt, mob_atlas,
+          short_painkiller, short_schizoyorsh, short_morphine, short_epinephrine,
+          bonus_stomp, bonus_strike
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27)`,
+        [
+          userId,
+          consumables.nade_plantain, consumables.nade_napalm, consumables.nade_thunder, consumables.nade_frost,
+          consumables.nade_tarmac, consumables.nade_sickness, consumables.nade_stinky,
+          consumables.enh_solyanka, consumables.enh_garlic_soup, consumables.enh_pea_soup, consumables.enh_lingonberry,
+          consumables.enh_frosty, consumables.enh_alcobull, consumables.enh_geyser_vodka,
+          consumables.mob_grog, consumables.mob_strength_stimulator, consumables.mob_neurotonic, consumables.mob_battery,
+          consumables.mob_salt, consumables.mob_atlas,
+          consumables.short_painkiller, consumables.short_schizoyorsh, consumables.short_morphine, consumables.short_epinephrine,
+          consumables.bonus_stomp, consumables.bonus_strike
+        ]
       );
     }
 
-    res.json({ message: 'Stats updated successfully' });
+    res.json({ message: 'Consumables updated successfully' });
   } catch (error) {
-    console.error('Error updating stats:', error);
-    res.status(500).json({ error: 'Failed to update stats' });
-  }
-});
-
-// ============================================
-// GET EQUIPMENT
-// ============================================
-
-router.get('/equipment/:userId', verifyToken, async (req, res) => {
-  try {
-    const userId = req.params.userId;
-
-    if (req.user.id !== parseInt(userId) && req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Access denied' });
-    }
-
-    const result = await pool.query(
-      'SELECT * FROM equipment WHERE user_id = $1',
-      [userId]
-    );
-
-    res.json(result.rows[0] || {});
-  } catch (error) {
-    console.error('Error fetching equipment:', error);
-    res.status(500).json({ error: 'Failed to fetch equipment' });
-  }
-});
-
-// ============================================
-// UPDATE EQUIPMENT
-// ============================================
-
-router.put('/equipment/:userId', verifyToken, async (req, res) => {
-  try {
-    const userId = req.params.userId;
-    const { weapons, armors, artifact_builds, artifact_image } = req.body;
-
-    if (req.user.id !== parseInt(userId) && req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Access denied' });
-    }
-
-    const check = await pool.query('SELECT id FROM equipment WHERE user_id = $1', [userId]);
-
-    if (check.rows.length > 0) {
-      await pool.query(
-        `UPDATE equipment 
-         SET weapons = $1, armors = $2, artifact_builds = $3, artifact_image = $4
-         WHERE user_id = $5`,
-        [weapons, armors, artifact_builds, artifact_image || null, userId]
-      );
-    } else {
-      await pool.query(
-        `INSERT INTO equipment (user_id, weapons, armors, artifact_builds, artifact_image)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [userId, weapons, armors, artifact_builds, artifact_image || null]
-      );
-    }
-
-    res.json({ message: 'Equipment updated successfully' });
-  } catch (error) {
-    console.error('Error updating equipment:', error);
-    res.status(500).json({ error: 'Failed to update equipment' });
+    console.error('Error updating consumables:', error);
+    res.status(500).json({ error: 'Failed to update consumables' });
   }
 });
 

@@ -109,7 +109,7 @@ function displayConsumablesView(users) {
   const tbody = document.getElementById('consumablesBody');
   
   if (users.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="24" style="text-align:center;">No members found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="27" style="text-align:center;">No members found</td></tr>';
     return;
   }
 
@@ -121,6 +121,9 @@ function displayConsumablesView(users) {
         <td>${userItem.nade_napalm || 0}</td>
         <td>${userItem.nade_thunder || 0}</td>
         <td>${userItem.nade_frost || 0}</td>
+        <td>${userItem.nade_tarmac || 0}</td>
+        <td>${userItem.nade_sickness || 0}</td>
+        <td>${userItem.nade_stinky || 0}</td>
         <td>${userItem.enh_solyanka || 0}</td>
         <td>${userItem.enh_garlic_soup || 0}</td>
         <td>${userItem.enh_pea_soup || 0}</td>
