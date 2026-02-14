@@ -1,5 +1,4 @@
 const rateLimit = require('express-rate-limit');
-const slowDown = require('express-slow-down');
 const helmet = require('helmet');
 
 // ============================================
@@ -31,12 +30,6 @@ const registerLimiter = rateLimit({
   legacyHeaders: false
 });
 
-const speedLimiter = slowDown({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  delayAfter: 50, // Allow 50 requests at full speed
-  delayMs: 200 // Add 200ms delay per request after that
-});
-
 // ============================================
 // FAILED LOGIN TRACKING
 // ============================================
@@ -46,7 +39,6 @@ const failedAttempts = new Map();
 function trackFailedLogin(username) {
   const attempts = failedAttempts.get(username) || { count: 0, firstAttempt: Date.now() };
   
-  // Reset counter after 15 minutes
   if (Date.now() - attempts.firstAttempt > 15 * 60 * 1000) {
     attempts.count = 0;
     attempts.firstAttempt = Date.now();
@@ -55,7 +47,6 @@ function trackFailedLogin(username) {
   attempts.count++;
   failedAttempts.set(username, attempts);
   
-  // Lock account after 5 failed attempts
   if (attempts.count >= 5) {
     console.log(`⚠️  Account locked: ${username} (too many failed attempts)`);
     return true;
@@ -72,7 +63,6 @@ function isAccountLocked(username) {
   const attempts = failedAttempts.get(username);
   if (!attempts) return false;
   
-  // Reset after 15 minutes
   if (Date.now() - attempts.firstAttempt > 15 * 60 * 1000) {
     failedAttempts.delete(username);
     return false;
@@ -126,14 +116,13 @@ const helmetConfig = helmet({
 });
 
 // ============================================
-// EXPORTS (NO VALIDATION FUNCTIONS)
+// EXPORTS (NO speedLimiter!)
 // ============================================
 
 module.exports = {
   authLimiter,
   apiLimiter,
   registerLimiter,
-  speedLimiter,
   checkBlacklist,
   blacklistIP,
   trackFailedLogin,

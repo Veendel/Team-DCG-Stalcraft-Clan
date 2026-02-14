@@ -7,7 +7,6 @@ const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const { 
   apiLimiter, 
-  speedLimiter, 
   checkBlacklist,
   helmetConfig 
 } = require('./middleware/security');
@@ -21,7 +20,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(helmetConfig);
 app.use(checkBlacklist);
-app.use(speedLimiter);
+// app.use(speedLimiter); ← REMOVED
 
 // Request size limits
 app.use(express.json({ limit: '10mb' }));
@@ -72,7 +71,6 @@ app.use((err, req, res, next) => {
 // START SERVER
 // ============================================
 // Authentication routes
-app.use('/api/auth', authRoutes);
 
 // TEMPORARILY COMMENT OUT ADMIN ROUTES TO TEST
 // app.use('/api', apiLimiter, adminRoutes);
