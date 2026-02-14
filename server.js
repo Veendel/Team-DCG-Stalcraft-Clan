@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const db = require('./database/db');
+const pool = require('./database/db'); // PostgreSQL, not SQLite
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const { 
@@ -19,22 +19,15 @@ const PORT = process.env.PORT || 3000;
 // SECURITY MIDDLEWARE (APPLIED FIRST!)
 // ============================================
 
-// Security headers
 app.use(helmetConfig);
-
-// Check IP blacklist
 app.use(checkBlacklist);
-
-// General speed limiter
 app.use(speedLimiter);
 
-app.set('trust proxy', 1);
-
-
+// Request size limits
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// CORS configuration
+// CORS
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS || '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -45,13 +38,13 @@ app.use(cors({
 app.use(express.static('public'));
 
 // ============================================
-// API ROUTES WITH RATE LIMITING
+// API ROUTES
 // ============================================
 
-// Authentication routes (with strict rate limiting)
+// Authentication routes (NO EXTRA MIDDLEWARE HERE)
 app.use('/api/auth', authRoutes);
 
-// Admin & general API routes (with general rate limiting)
+// Admin routes with rate limiting
 app.use('/api', apiLimiter, adminRoutes);
 
 // ============================================
@@ -66,12 +59,10 @@ app.get('/', (req, res) => {
 // ERROR HANDLING
 // ============================================
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });
 
-// Global error handler
 app.use((err, req, res, next) => {
   console.error('Server error:', err);
   res.status(500).json({ error: 'Internal server error' });
@@ -80,18 +71,16 @@ app.use((err, req, res, next) => {
 // ============================================
 // START SERVER
 // ============================================
+// Authentication routes
+app.use('/api/auth', authRoutes);
 
+// TEMPORARILY COMMENT OUT ADMIN ROUTES TO TEST
+// app.use('/api', apiLimiter, adminRoutes);
 app.listen(PORT, () => {
   console.log(`
 ╔════════════════════════════════════════╗
-║   STALCRAFT Player Manager Server      ║
-║                                        ║
-║   Rate limiting                        ║
-║   IP blacklisting                      ║
-║   Input validation                     ║
-║   Security headers (Helmet)            ║
-║   Request size limits                  ║
+║   STALCRAFT Player Manager Server     ║
+║   Running on http://localhost:${PORT}  ║
 ╚════════════════════════════════════════╝
-
   `);
 });
