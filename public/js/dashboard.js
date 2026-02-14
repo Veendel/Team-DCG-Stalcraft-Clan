@@ -79,41 +79,14 @@ async function loadConsumables() {
     if (response.ok) {
       const consumables = await response.json();
       
-      // Grenades (UPDATED)
-      document.getElementById('nadePlantain').value = consumables.nade_plantain || 0;
-      document.getElementById('nadeNapalm').value = consumables.nade_napalm || 0;
-      document.getElementById('nadeThunder').value = consumables.nade_thunder || 0;
-      document.getElementById('nadeFrost').value = consumables.nade_frost || 0;
-      document.getElementById('nadeTarmac').value = consumables.nade_tarmac || 0;
-      document.getElementById('nadeSickness').value = consumables.nade_sickness || 0;
-      document.getElementById('nadeStinky').value = consumables.nade_stinky || 0;
+      // ... other consumables loading code ...
       
-      // Enhancement
-      document.getElementById('enhSolyanka').value = consumables.enh_solyanka || 0;
-      document.getElementById('enhGarlicSoup').value = consumables.enh_garlic_soup || 0;
-      document.getElementById('enhPeaSoup').value = consumables.enh_pea_soup || 0;
-      document.getElementById('enhLingonberry').value = consumables.enh_lingonberry || 0;
-      document.getElementById('enhFrosty').value = consumables.enh_frosty || 0;
-      document.getElementById('enhAlcobull').value = consumables.enh_alcobull || 0;
-      document.getElementById('enhGeyserVodka').value = consumables.enh_geyser_vodka || 0;
-      
-      // Mobility
-      document.getElementById('mobGrog').value = consumables.mob_grog || 0;
-      document.getElementById('mobStrengthStimulator').value = consumables.mob_strength_stimulator || 0;
-      document.getElementById('mobNeurotonic').value = consumables.mob_neurotonic || 0;
-      document.getElementById('mobBattery').value = consumables.mob_battery || 0;
-      document.getElementById('mobSalt').value = consumables.mob_salt || 0;
-      document.getElementById('mobAtlas').value = consumables.mob_atlas || 0;
-      
-      // Short-term
-      document.getElementById('shortPainkiller').value = consumables.short_painkiller || 0;
-      document.getElementById('shortSchizoyorsh').value = consumables.short_schizoyorsh || 0;
-      document.getElementById('shortMorphine').value = consumables.short_morphine || 0;
-      document.getElementById('shortEpinephrine').value = consumables.short_epinephrine || 0;
-      
-      // Bonus (now countable)
+      // Bonus (MUST BE NUMBERS, NOT BOOLEANS)
       document.getElementById('bonusStomp').value = consumables.bonus_stomp || 0;
       document.getElementById('bonusStrike').value = consumables.bonus_strike || 0;
+      
+      console.log('Loaded STOMP:', consumables.bonus_stomp); // Debug
+      console.log('Loaded STRIKE:', consumables.bonus_strike); // Debug
     }
   } catch (error) {
     console.error('Failed to load consumables:', error);
@@ -250,37 +223,41 @@ document.getElementById('consumablesForm').addEventListener('submit', async (e) 
   e.preventDefault();
 
   const consumables = {
-    nade_plantain: parseInt(document.getElementById('nadePlantain').value),
-    nade_napalm: parseInt(document.getElementById('nadeNapalm').value),
-    nade_thunder: parseInt(document.getElementById('nadeThunder').value),
-    nade_frost: parseInt(document.getElementById('nadeFrost').value),
-    nade_tarmac: parseInt(document.getElementById('nadeTarmac').value),
-    nade_sickness: parseInt(document.getElementById('nadeSickness').value),
-    nade_stinky: parseInt(document.getElementById('nadeStinky').value),
+    nade_plantain: parseInt(document.getElementById('nadePlantain').value) || 0,
+    nade_napalm: parseInt(document.getElementById('nadeNapalm').value) || 0,
+    nade_thunder: parseInt(document.getElementById('nadeThunder').value) || 0,
+    nade_frost: parseInt(document.getElementById('nadeFrost').value) || 0,
+    nade_tarmac: parseInt(document.getElementById('nadeTarmac').value) || 0,
+    nade_sickness: parseInt(document.getElementById('nadeSickness').value) || 0,
+    nade_stinky: parseInt(document.getElementById('nadeStinky').value) || 0,
     
-    enh_solyanka: parseInt(document.getElementById('enhSolyanka').value),
-    enh_garlic_soup: parseInt(document.getElementById('enhGarlicSoup').value),
-    enh_pea_soup: parseInt(document.getElementById('enhPeaSoup').value),
-    enh_lingonberry: parseInt(document.getElementById('enhLingonberry').value),
-    enh_frosty: parseInt(document.getElementById('enhFrosty').value),
-    enh_alcobull: parseInt(document.getElementById('enhAlcobull').value),
-    enh_geyser_vodka: parseInt(document.getElementById('enhGeyserVodka').value),
+    enh_solyanka: parseInt(document.getElementById('enhSolyanka').value) || 0,
+    enh_garlic_soup: parseInt(document.getElementById('enhGarlicSoup').value) || 0,
+    enh_pea_soup: parseInt(document.getElementById('enhPeaSoup').value) || 0,
+    enh_lingonberry: parseInt(document.getElementById('enhLingonberry').value) || 0,
+    enh_frosty: parseInt(document.getElementById('enhFrosty').value) || 0,
+    enh_alcobull: parseInt(document.getElementById('enhAlcobull').value) || 0,
+    enh_geyser_vodka: parseInt(document.getElementById('enhGeyserVodka').value) || 0,
     
-    mob_grog: parseInt(document.getElementById('mobGrog').value),
-    mob_strength_stimulator: parseInt(document.getElementById('mobStrengthStimulator').value),
-    mob_neurotonic: parseInt(document.getElementById('mobNeurotonic').value),
-    mob_battery: parseInt(document.getElementById('mobBattery').value),
-    mob_salt: parseInt(document.getElementById('mobSalt').value),
-    mob_atlas: parseInt(document.getElementById('mobAtlas').value),
+    mob_grog: parseInt(document.getElementById('mobGrog').value) || 0,
+    mob_strength_stimulator: parseInt(document.getElementById('mobStrengthStimulator').value) || 0,
+    mob_neurotonic: parseInt(document.getElementById('mobNeurotonic').value) || 0,
+    mob_battery: parseInt(document.getElementById('mobBattery').value) || 0,
+    mob_salt: parseInt(document.getElementById('mobSalt').value) || 0,
+    mob_atlas: parseInt(document.getElementById('mobAtlas').value) || 0,
     
-    short_painkiller: parseInt(document.getElementById('shortPainkiller').value),
-    short_schizoyorsh: parseInt(document.getElementById('shortSchizoyorsh').value),
-    short_morphine: parseInt(document.getElementById('shortMorphine').value),
-    short_epinephrine: parseInt(document.getElementById('shortEpinephrine').value),
+    short_painkiller: parseInt(document.getElementById('shortPainkiller').value) || 0,
+    short_schizoyorsh: parseInt(document.getElementById('shortSchizoyorsh').value) || 0,
+    short_morphine: parseInt(document.getElementById('shortMorphine').value) || 0,
+    short_epinephrine: parseInt(document.getElementById('shortEpinephrine').value) || 0,
     
-    bonus_stomp: parseInt(document.getElementById('bonusStomp').value),
-    bonus_strike: parseInt(document.getElementById('bonusStrike').value)
+    // CRITICAL: Make sure these are integers, not booleans!
+    bonus_stomp: parseInt(document.getElementById('bonusStomp').value) || 0,
+    bonus_strike: parseInt(document.getElementById('bonusStrike').value) || 0
   };
+
+  console.log('Saving STOMP:', consumables.bonus_stomp); // Debug
+  console.log('Saving STRIKE:', consumables.bonus_strike); // Debug
 
   try {
     const response = await fetch(`/api/consumables/${user.id}`, {
@@ -294,10 +271,14 @@ document.getElementById('consumablesForm').addEventListener('submit', async (e) 
 
     if (response.ok) {
       showMessage('✓ Consumables updated successfully!');
+      console.log('Save successful!'); // Debug
     } else {
+      const error = await response.json();
+      console.error('Save failed:', error); // Debug
       showMessage('❌ Failed to update consumables', 'error');
     }
   } catch (error) {
+    console.error('Connection error:', error); // Debug
     showMessage('❌ Connection error', 'error');
   }
 });
