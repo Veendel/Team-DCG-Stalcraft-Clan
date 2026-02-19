@@ -1,19 +1,30 @@
 const token = localStorage.getItem('token');
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-// Check authentication
+// Check authentication - redirect and stop execution
 if (!token) {
   window.location.href = '/login.html';
+  throw new Error('No token'); // Prevent further execution
+}
+
+// Validate user object has id
+if (!user || !user.id) {
+  console.error('Invalid user data in localStorage');
+  localStorage.clear();
+  window.location.href = '/login.html';
+  throw new Error('Invalid user');
 }
 
 // Display welcome message
-document.getElementById('welcomeMsg').textContent = `Welcome, ${user.username}!`;
+document.getElementById('welcomeMsg').textContent = `Welcome, ${user.username || 'Member'}!`;
 
 // Show admin link if user is admin
 if (user.role === 'admin') {
   const adminLink = document.getElementById('adminLink');
-  adminLink.style.display = 'inline';
-  adminLink.href = '/admin.html';
+  if (adminLink) {
+    adminLink.style.display = 'inline';
+    adminLink.href = '/admin.html';
+  }
 }
 
 // Logout
@@ -182,35 +193,13 @@ async function saveEquipment(equipment) {
 
     if (response.ok) {
       showMessage('✓ Equipment updated successfully!');
-      // Clear file input
       document.getElementById('artifactImage').value = '';
     } else {
-      const error = await response.json();
-      showMessage('❌ Failed to update equipment: ' + (error.error || 'Unknown error'), 'error');
+      const errData = await response.json().catch(() => ({}));
+      showMessage('❌ Failed to update equipment: ' + (errData.error || 'Unknown error'), 'error');
     }
   } catch (error) {
     console.error('Equipment update error:', error);
-    showMessage('❌ Connection error', 'error');
-  }
-}
-
-async function saveEquipment(equipment) {
-  try {
-    const response = await fetch(`/api/equipment/${user.id}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(equipment)
-    });
-
-    if (response.ok) {
-      showMessage('✓ Equipment updated successfully!');
-    } else {
-      showMessage('❌ Failed to update equipment', 'error');
-    }
-  } catch (error) {
     showMessage('❌ Connection error', 'error');
   }
 }
