@@ -70,6 +70,108 @@ router.get('/users', verifyToken, verifyAdmin, async (req, res) => {
 });
 
 // ============================================
+// GET STATS
+// ============================================
+
+router.get('/stats/:userId', verifyToken, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    if (req.user.id !== parseInt(userId) && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    const result = await pool.query(
+      'SELECT * FROM player_stats WHERE user_id = $1',
+      [userId]
+    );
+    res.json(result.rows[0] || {});
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+});
+
+// ============================================
+// UPDATE STATS
+// ============================================
+
+router.put('/stats/:userId', verifyToken, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { ingame_name, discord_name, kills, deaths } = req.body;
+    if (req.user.id !== parseInt(userId) && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    const check = await pool.query('SELECT id FROM player_stats WHERE user_id = $1', [userId]);
+    if (check.rows.length > 0) {
+      await pool.query(
+        `UPDATE player_stats SET ingame_name = $1, discord_name = $2, kills = $3, deaths = $4 WHERE user_id = $5`,
+        [ingame_name || '', discord_name || '', parseInt(kills) || 0, parseInt(deaths) || 0, userId]
+      );
+    } else {
+      await pool.query(
+        'INSERT INTO player_stats (user_id, ingame_name, discord_name, kills, deaths) VALUES ($1, $2, $3, $4, $5)',
+        [userId, ingame_name || '', discord_name || '', parseInt(kills) || 0, parseInt(deaths) || 0]
+      );
+    }
+    res.json({ message: 'Stats updated successfully' });
+  } catch (error) {
+    console.error('Error updating stats:', error);
+    res.status(500).json({ error: 'Failed to update stats' });
+  }
+});
+
+// ============================================
+// GET EQUIPMENT
+// ============================================
+
+router.get('/equipment/:userId', verifyToken, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    if (req.user.id !== parseInt(userId) && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    const result = await pool.query(
+      'SELECT * FROM equipment WHERE user_id = $1',
+      [userId]
+    );
+    res.json(result.rows[0] || {});
+  } catch (error) {
+    console.error('Error fetching equipment:', error);
+    res.status(500).json({ error: 'Failed to fetch equipment' });
+  }
+});
+
+// ============================================
+// UPDATE EQUIPMENT
+// ============================================
+
+router.put('/equipment/:userId', verifyToken, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { weapons, armors, artifact_builds, artifact_image } = req.body;
+    if (req.user.id !== parseInt(userId) && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    const check = await pool.query('SELECT id FROM equipment WHERE user_id = $1', [userId]);
+    if (check.rows.length > 0) {
+      await pool.query(
+        `UPDATE equipment SET weapons = $1, armors = $2, artifact_builds = $3, artifact_image = COALESCE($4, artifact_image) WHERE user_id = $5`,
+        [weapons || '', armors || '', artifact_builds || '', artifact_image || null, userId]
+      );
+    } else {
+      await pool.query(
+        'INSERT INTO equipment (user_id, weapons, armors, artifact_builds, artifact_image) VALUES ($1, $2, $3, $4, $5)',
+        [userId, weapons || '', armors || '', artifact_builds || '', artifact_image || null]
+      );
+    }
+    res.json({ message: 'Equipment updated successfully' });
+  } catch (error) {
+    console.error('Error updating equipment:', error);
+    res.status(500).json({ error: 'Failed to update equipment' });
+  }
+});
+
+// ============================================
 // DELETE USER
 // ============================================
 
