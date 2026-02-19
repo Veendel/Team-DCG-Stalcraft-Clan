@@ -9,240 +9,132 @@
 <body>
   <nav class="navbar">
     <h2>⚡ TEAM DCG</h2>
-      <div class="nav-links">
-        <span id="welcomeMsg"></span>
-        <a href="/clan-strats.html">📋 Clan Strats</a>
-        <a href="#" id="adminLink" style="display: none;">Admin Panel</a>
-        <a href="#" id="logoutBtn">Logout</a>
-      </div>
+    <div class="nav-links">
+      <span id="welcomeMsg"></span>
+      <a href="/clan-strats.html">📋 Clan Strats</a>
+      <a href="#" id="adminLink" style="display: none;">Admin Panel</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
   </nav>
 
-  <div class="container dashboard">
-    <h1>📊 Member Dashboard</h1>
+  <!-- TOP MESSAGE BAR - visible when updates happen -->
+  <div id="message" class="dashboard-toast" aria-live="polite"></div>
 
-    <div class="dashboard-grid">
-      <!-- Player Stats -->
-      <div class="card">
-        <h2>⚔️ Player Stats</h2>
-        <form id="statsForm">
+  <div class="container dashboard-simple">
+    <!-- Clan War Quick Bar -->
+    <div class="clan-war-bar">
+      <span class="clan-war-label">Clan War today?</span>
+      <button type="button" id="registerYes" class="btn btn-primary btn-sm">✅ Yes</button>
+      <button type="button" id="registerNo" class="btn btn-secondary btn-sm">❌ No</button>
+      <span id="clanWarStatus" class="clan-war-status"></span>
+    </div>
+
+    <!-- Tabs -->
+    <div class="dashboard-tabs">
+      <button type="button" class="tab-btn active" data-tab="stats">Stats</button>
+      <button type="button" class="tab-btn" data-tab="equipment">Equipment</button>
+      <button type="button" class="tab-btn" data-tab="consumables">Consumables</button>
+    </div>
+
+    <!-- Stats -->
+    <section id="tabStats" class="dashboard-tab active">
+      <form id="statsForm" class="form-simple">
+        <div class="form-row">
           <div class="form-group">
             <label for="ingameName">In-Game Name</label>
-            <input type="text" id="ingameName" placeholder="Your STALCRAFT name" required>
+            <input type="text" id="ingameName" placeholder="Your STALCRAFT name">
           </div>
-
           <div class="form-group">
-            <label for="discordName">Discord Name</label>
-            <input type="text" id="discordName" placeholder="YourName#1234" required>
+            <label for="discordName">Discord</label>
+            <input type="text" id="discordName" placeholder="YourName#1234">
           </div>
-
+        </div>
+        <div class="form-row form-row-3">
           <div class="form-group">
             <label for="kills">Kills</label>
-            <input type="number" id="kills" min="0" placeholder="0" required>
+            <input type="number" id="kills" min="0" value="0">
           </div>
-
           <div class="form-group">
             <label for="deaths">Deaths</label>
-            <input type="number" id="deaths" min="0" placeholder="0" required>
+            <input type="number" id="deaths" min="0" value="0">
           </div>
-
           <button type="submit" class="btn btn-primary">Update Stats</button>
-        </form>
-      </div>
-
-      <!-- Equipment -->
-      <div class="card">
-        <h2>🎒 Equipment</h2>
-        <form id="equipmentForm">
-          <div class="form-group">
-            <label for="weapons">Weapons</label>
-            <textarea id="weapons" placeholder="e.g., Master Gear AK-74M, Master Gear VSS"></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="armors">Armors</label>
-            <textarea id="armors" placeholder="e.g., Master Gear SEVA Suit, Master Gear Exoskeleton"></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="artifactBuilds">Artifact Builds</label>
-            <textarea id="artifactBuilds" placeholder="Describe your artifact setups"></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="artifactImage">Artifact Build Screenshot</label>
-            <input type="file" id="artifactImage" accept="image/*">
-            <small style="color: var(--dcg-text-dim);">Upload a screenshot of your artifact setup</small>
-          </div>
-
-          <button type="submit" class="btn btn-primary">Update Equipment</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Consumables Section -->
-    <div class="card">
-      <h2>💊 Consumables Inventory</h2>
-      <form id="consumablesForm">
-        <div class="consumables-section">
-          
-          <!-- Grenades (UPDATED) -->
-          <div class="consumable-category">
-            <h3>💣 Grenades</h3>
-            <div class="consumable-item">
-              <label for="nadePlantain">Plantain</label>
-              <input type="number" id="nadePlantain" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="nadeNapalm">Napalm</label>
-              <input type="number" id="nadeNapalm" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="nadeThunder">Thunder</label>
-              <input type="number" id="nadeThunder" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="nadeFrost">Frost</label>
-              <input type="number" id="nadeFrost" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="nadeTarmac">Tarmac</label>
-              <input type="number" id="nadeTarmac" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="nadeSickness">Sickness</label>
-              <input type="number" id="nadeSickness" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="nadeStinky">Stinky</label>
-              <input type="number" id="nadeStinky" min="0" value="0">
-            </div>
-          </div>
-          
-          <!-- Enhancement -->
-          <div class="consumable-category">
-            <h3>⚡ Enhancement</h3>
-            <div class="consumable-item">
-              <label for="enhSolyanka">Solyanka</label>
-              <input type="number" id="enhSolyanka" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="enhGarlicSoup">Garlic Soup</label>
-              <input type="number" id="enhGarlicSoup" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="enhPeaSoup">Pea Soup</label>
-              <input type="number" id="enhPeaSoup" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="enhLingonberry">Lingonberry</label>
-              <input type="number" id="enhLingonberry" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="enhFrosty">Frosty</label>
-              <input type="number" id="enhFrosty" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="enhAlcobull">Alcobull</label>
-              <input type="number" id="enhAlcobull" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="enhGeyserVodka">Geyser Vodka</label>
-              <input type="number" id="enhGeyserVodka" min="0" value="0">
-            </div>
-          </div>
-
-          <!-- Mobility -->
-          <div class="consumable-category">
-            <h3>🏃 Mobility</h3>
-            <div class="consumable-item">
-              <label for="mobGrog">Grog</label>
-              <input type="number" id="mobGrog" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="mobStrengthStimulator">Strength Stimulator</label>
-              <input type="number" id="mobStrengthStimulator" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="mobNeurotonic">Neurotonic</label>
-              <input type="number" id="mobNeurotonic" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="mobBattery">Battery</label>
-              <input type="number" id="mobBattery" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="mobSalt">SALT</label>
-              <input type="number" id="mobSalt" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="mobAtlas">ATLAS</label>
-              <input type="number" id="mobAtlas" min="0" value="0">
-            </div>
-          </div>
-
-          <!-- Short-term -->
-          <div class="consumable-category">
-            <h3>💉 Short-term</h3>
-            <div class="consumable-item">
-              <label for="shortPainkiller">Pain Killer</label>
-              <input type="number" id="shortPainkiller" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="shortSchizoyorsh">SchizoYorsh</label>
-              <input type="number" id="shortSchizoyorsh" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="shortMorphine">Morphine</label>
-              <input type="number" id="shortMorphine" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="shortEpinephrine">Epinephrine</label>
-              <input type="number" id="shortEpinephrine" min="0" value="0">
-            </div>
-            
-          </div>
-
-          <!-- Bonus -->
-          <div class="consumable-category">
-            <h3>🎁 Bonus</h3>
-            <div class="consumable-item">
-              <label for="bonusStomp">STOMP</label>
-              <input type="number" id="bonusStomp" min="0" value="0">
-            </div>
-            <div class="consumable-item">
-              <label for="bonusStrike">Strike</label>
-              <input type="number" id="bonusStrike" min="0" value="0">
-            </div>
-          </div>
-            
-          </div>
-      <!-- Clan War Registration Section (NEW) -->
-          <div class="card">
-            <h2>⚔️ Clan War Registration</h2>
-            <p style="color: var(--dcg-text-dim); margin-bottom: 20px;">
-              Will you participate in today's clan war?
-            </p>
-
-            <div style="display: flex; gap: 20px; justify-content: center;">
-              <button type="button" id="registerYes" class="btn btn-primary" style="flex: 1;">
-                ✅ YES - I'm Ready!
-              </button>
-              <button type="button" id="registerNo" class="btn btn-secondary" style="flex: 1;">
-                ❌ NO - Can't Make It
-              </button>
-            </div>
-          
-            <div id="clanWarStatus" style="margin-top: 20px; padding: 15px; border-radius: 8px; text-align: center; display: none;"></div>
-          </div>
-        
-          <!-- Existing consumables card below... -->
         </div>
-
-        <button type="submit" class="btn btn-primary" style="margin-top: 20px; width: 100%;">Update Consumables</button>
       </form>
-    </div>
+    </section>
 
-    <div id="message" class="success"></div>
+    <!-- Equipment -->
+    <section id="tabEquipment" class="dashboard-tab">
+      <form id="equipmentForm" class="form-simple">
+        <div class="form-group">
+          <label for="weapons">Weapons</label>
+          <textarea id="weapons" rows="2" placeholder="e.g., Master Gear AK-74M"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="armors">Armors</label>
+          <textarea id="armors" rows="2" placeholder="e.g., Master Gear SEVA"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="artifactBuilds">Artifact Builds</label>
+          <textarea id="artifactBuilds" rows="2" placeholder="Describe your artifact setup"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="artifactImage">Artifact Screenshot</label>
+          <input type="file" id="artifactImage" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-primary">Update Equipment</button>
+      </form>
+    </section>
+
+    <!-- Consumables -->
+    <section id="tabConsumables" class="dashboard-tab">
+      <form id="consumablesForm" class="form-simple consumables-form">
+        <div class="consumables-grid">
+          <div class="consumables-group">
+            <h4>💣 Grenades</h4>
+            <div class="input-row"><label>Plantain</label><input type="number" id="nadePlantain" min="0" value="0"></div>
+            <div class="input-row"><label>Napalm</label><input type="number" id="nadeNapalm" min="0" value="0"></div>
+            <div class="input-row"><label>Thunder</label><input type="number" id="nadeThunder" min="0" value="0"></div>
+            <div class="input-row"><label>Frost</label><input type="number" id="nadeFrost" min="0" value="0"></div>
+            <div class="input-row"><label>Tarmac</label><input type="number" id="nadeTarmac" min="0" value="0"></div>
+            <div class="input-row"><label>Sickness</label><input type="number" id="nadeSickness" min="0" value="0"></div>
+            <div class="input-row"><label>Stinky</label><input type="number" id="nadeStinky" min="0" value="0"></div>
+          </div>
+          <div class="consumables-group">
+            <h4>⚡ Enhancement</h4>
+            <div class="input-row"><label>Solyanka</label><input type="number" id="enhSolyanka" min="0" value="0"></div>
+            <div class="input-row"><label>Garlic Soup</label><input type="number" id="enhGarlicSoup" min="0" value="0"></div>
+            <div class="input-row"><label>Pea Soup</label><input type="number" id="enhPeaSoup" min="0" value="0"></div>
+            <div class="input-row"><label>Lingonberry</label><input type="number" id="enhLingonberry" min="0" value="0"></div>
+            <div class="input-row"><label>Frosty</label><input type="number" id="enhFrosty" min="0" value="0"></div>
+            <div class="input-row"><label>Alcobull</label><input type="number" id="enhAlcobull" min="0" value="0"></div>
+            <div class="input-row"><label>Geyser Vodka</label><input type="number" id="enhGeyserVodka" min="0" value="0"></div>
+          </div>
+          <div class="consumables-group">
+            <h4>🏃 Mobility</h4>
+            <div class="input-row"><label>Grog</label><input type="number" id="mobGrog" min="0" value="0"></div>
+            <div class="input-row"><label>Str. Stimulator</label><input type="number" id="mobStrengthStimulator" min="0" value="0"></div>
+            <div class="input-row"><label>Neurotonic</label><input type="number" id="mobNeurotonic" min="0" value="0"></div>
+            <div class="input-row"><label>Battery</label><input type="number" id="mobBattery" min="0" value="0"></div>
+            <div class="input-row"><label>SALT</label><input type="number" id="mobSalt" min="0" value="0"></div>
+            <div class="input-row"><label>ATLAS</label><input type="number" id="mobAtlas" min="0" value="0"></div>
+          </div>
+          <div class="consumables-group">
+            <h4>💉 Short-term</h4>
+            <div class="input-row"><label>Pain Killer</label><input type="number" id="shortPainkiller" min="0" value="0"></div>
+            <div class="input-row"><label>SchizoYorsh</label><input type="number" id="shortSchizoyorsh" min="0" value="0"></div>
+            <div class="input-row"><label>Morphine</label><input type="number" id="shortMorphine" min="0" value="0"></div>
+            <div class="input-row"><label>Epinephrine</label><input type="number" id="shortEpinephrine" min="0" value="0"></div>
+          </div>
+          <div class="consumables-group">
+            <h4>🎁 Bonus</h4>
+            <div class="input-row"><label>STOMP</label><input type="number" id="bonusStomp" min="0" value="0"></div>
+            <div class="input-row"><label>Strike</label><input type="number" id="bonusStrike" min="0" value="0"></div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Consumables</button>
+      </form>
+    </section>
   </div>
 
   <script src="/js/dashboard.js"></script>

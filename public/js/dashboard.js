@@ -88,16 +88,34 @@ async function loadConsumables() {
     });
 
     if (response.ok) {
-      const consumables = await response.json();
-      
-      // ... other consumables loading code ...
-      
-      // Bonus (MUST BE NUMBERS, NOT BOOLEANS)
-      document.getElementById('bonusStomp').value = consumables.bonus_stomp || 0;
-      document.getElementById('bonusStrike').value = consumables.bonus_strike || 0;
-      
-      console.log('Loaded STOMP:', consumables.bonus_stomp); // Debug
-      console.log('Loaded STRIKE:', consumables.bonus_strike); // Debug
+      const c = await response.json();
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || 0; };
+      set('nadePlantain', c.nade_plantain);
+      set('nadeNapalm', c.nade_napalm);
+      set('nadeThunder', c.nade_thunder);
+      set('nadeFrost', c.nade_frost);
+      set('nadeTarmac', c.nade_tarmac);
+      set('nadeSickness', c.nade_sickness);
+      set('nadeStinky', c.nade_stinky);
+      set('enhSolyanka', c.enh_solyanka);
+      set('enhGarlicSoup', c.enh_garlic_soup);
+      set('enhPeaSoup', c.enh_pea_soup);
+      set('enhLingonberry', c.enh_lingonberry);
+      set('enhFrosty', c.enh_frosty);
+      set('enhAlcobull', c.enh_alcobull);
+      set('enhGeyserVodka', c.enh_geyser_vodka);
+      set('mobGrog', c.mob_grog);
+      set('mobStrengthStimulator', c.mob_strength_stimulator);
+      set('mobNeurotonic', c.mob_neurotonic);
+      set('mobBattery', c.mob_battery);
+      set('mobSalt', c.mob_salt);
+      set('mobAtlas', c.mob_atlas);
+      set('shortPainkiller', c.short_painkiller);
+      set('shortSchizoyorsh', c.short_schizoyorsh);
+      set('shortMorphine', c.short_morphine);
+      set('shortEpinephrine', c.short_epinephrine);
+      set('bonusStomp', c.bonus_stomp);
+      set('bonusStrike', c.bonus_strike);
     }
   } catch (error) {
     console.error('Failed to load consumables:', error);
@@ -277,11 +295,11 @@ document.getElementById('consumablesForm').addEventListener('submit', async (e) 
 // ============================================
 
 function showMessage(msg, type = 'success') {
-  const messageDiv = document.getElementById('message');
-  messageDiv.textContent = msg;
-  messageDiv.className = type;
-  messageDiv.style.display = 'block';
-  setTimeout(() => messageDiv.style.display = 'none', 4000);
+  const el = document.getElementById('message');
+  el.textContent = msg;
+  el.className = 'dashboard-toast dashboard-toast--visible dashboard-toast--' + (type === 'error' ? 'error' : 'success');
+  el.setAttribute('aria-live', 'polite');
+  setTimeout(() => el.classList.remove('dashboard-toast--visible'), 4500);
 }
 
 // ============================================
@@ -304,28 +322,26 @@ async function loadClanWarStatus() {
 }
 
 function updateClanWarUI(registered) {
-  const statusDiv = document.getElementById('clanWarStatus');
+  const statusEl = document.getElementById('clanWarStatus');
   const yesBtn = document.getElementById('registerYes');
   const noBtn = document.getElementById('registerNo');
+  if (!statusEl || !yesBtn || !noBtn) return;
 
   if (registered === true) {
-    statusDiv.style.display = 'block';
-    statusDiv.style.background = 'rgba(76, 175, 80, 0.2)';
-    statusDiv.style.borderLeft = '4px solid var(--dcg-success)';
-    statusDiv.innerHTML = '✅ <strong>Registered:</strong> You\'re IN for today\'s clan war!';
-    yesBtn.style.opacity = '1';
-    noBtn.style.opacity = '0.5';
+    statusEl.textContent = '✅ You\'re IN for clan war!';
+    statusEl.className = 'clan-war-status clan-war-status--yes';
+    yesBtn.classList.add('active');
+    noBtn.classList.remove('active');
   } else if (registered === false) {
-    statusDiv.style.display = 'block';
-    statusDiv.style.background = 'rgba(255, 68, 68, 0.2)';
-    statusDiv.style.borderLeft = '4px solid var(--dcg-accent)';
-    statusDiv.innerHTML = '❌ <strong>Not Registered:</strong> You\'re sitting out today.';
-    yesBtn.style.opacity = '0.5';
-    noBtn.style.opacity = '1';
+    statusEl.textContent = '❌ Sitting out today';
+    statusEl.className = 'clan-war-status clan-war-status--no';
+    noBtn.classList.add('active');
+    yesBtn.classList.remove('active');
   } else {
-    statusDiv.style.display = 'none';
-    yesBtn.style.opacity = '1';
-    noBtn.style.opacity = '1';
+    statusEl.textContent = '';
+    statusEl.className = 'clan-war-status';
+    yesBtn.classList.remove('active');
+    noBtn.classList.remove('active');
   }
 }
 
@@ -363,9 +379,20 @@ async function registerForClanWar(registered) {
   }
 }
 
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.dashboard-tab').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    const panel = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+    if (panel) panel.classList.add('active');
+  });
+});
+
 // Load clan war status on page load
 loadClanWarStatus();
-// Load all data on page load
 loadStats();
 loadEquipment();
 loadConsumables();
