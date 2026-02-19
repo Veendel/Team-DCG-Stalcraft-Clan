@@ -47,8 +47,8 @@ async function loadUsers() {
   } catch (error) {
     console.error('Load users error:', error);
     showError('Failed to load users: ' + error.message);
-    document.getElementById('statsBody').innerHTML = '<tr><td colspan="14" style="text-align:center; color:red;">Error loading data. Check console.</td></tr>';
-    document.getElementById('consumablesBody').innerHTML = '<tr><td colspan="24" style="text-align:center; color:red;">Error loading data. Check console.</td></tr>';
+    document.getElementById('statsBody').innerHTML = '<tr><td colspan="14" class="loading-cell" style="color:var(--dcg-danger);">Error loading data. Check console.</td></tr>';
+    document.getElementById('consumablesBody').innerHTML = '<tr><td colspan="27" class="loading-cell" style="color:var(--dcg-danger);">Error loading data. Check console.</td></tr>';
   }
 }
 
@@ -67,30 +67,35 @@ function displayStatsView(users) {
   tbody.innerHTML = users.map(userItem => {
     const kdRatio = userItem.deaths > 0 ? (userItem.kills / userItem.deaths).toFixed(2) : (userItem.kills || 0);
     const createdDate = new Date(userItem.created_at).toLocaleDateString();
+    const weapons = escapeHtml(userItem.weapons || '-');
+    const armors = escapeHtml(userItem.armors || '-');
+    const artifacts = escapeHtml(userItem.artifact_builds || '-');
+    const ingame = escapeHtml(userItem.ingame_name || '-');
+    const discord = escapeHtml(userItem.discord_name || '-');
     
     return `
       <tr data-user-id="${userItem.id}">
-        <td><strong>${userItem.id}</strong></td>
-        <td><strong>${userItem.username}</strong></td>
-        <td>${truncateText(userItem.ingame_name, 30)}</td>
-        <td>${truncateText(userItem.discord_name, 30)}</td>
-        <td>
+        <td class="cell-id"><strong>${userItem.id}</strong></td>
+        <td class="cell-username"><strong>${userItem.username}</strong></td>
+        <td class="cell-long" title="${ingame}">${ingame}</td>
+        <td class="cell-long" title="${discord}">${discord}</td>
+        <td class="cell-role">
           <select class="role-select" data-user-id="${userItem.id}" data-current-role="${userItem.role}">
             <option value="user" ${userItem.role === 'user' ? 'selected' : ''}>User</option>
             <option value="admin" ${userItem.role === 'admin' ? 'selected' : ''}>Admin</option>
           </select>
         </td>
-        <td class="text-success"><strong>${userItem.kills || 0}</strong></td>
-        <td class="text-danger"><strong>${userItem.deaths || 0}</strong></td>
-        <td><strong>${kdRatio}</strong></td>
-        <td>${truncateText(userItem.weapons, 50)}</td>
-        <td>${truncateText(userItem.armors, 50)}</td>
-        <td>${truncateText(userItem.artifact_builds, 50)}</td>
-        <td>${userItem.artifact_image ? `<button class="btn btn-small btn-secondary view-image-btn" data-username="${userItem.username}" data-image="${encodeURIComponent(userItem.artifact_image)}">📷 View</button>` : '-'}</td>
-        <td>${createdDate}</td>
-        <td>
+        <td class="cell-num text-success"><strong>${userItem.kills || 0}</strong></td>
+        <td class="cell-num text-danger"><strong>${userItem.deaths || 0}</strong></td>
+        <td class="cell-num"><strong>${kdRatio}</strong></td>
+        <td class="cell-long cell-text" title="${weapons}">${weapons}</td>
+        <td class="cell-long cell-text" title="${armors}">${armors}</td>
+        <td class="cell-long cell-text" title="${artifacts}">${artifacts}</td>
+        <td class="cell-image">${userItem.artifact_image ? `<button class="btn btn-small btn-secondary view-image-btn" data-username="${escapeAttr(userItem.username)}" data-image="${encodeURIComponent(userItem.artifact_image)}">📷 View</button>` : '<span class="no-data">-</span>'}</td>
+        <td class="cell-date">${createdDate}</td>
+        <td class="cell-actions">
           ${userItem.role !== 'admin' ? 
-            `<button class="btn btn-danger btn-small delete-user-btn" data-user-id="${userItem.id}" data-username="${userItem.username}">🗑️</button>` 
+            `<button class="btn btn-danger btn-small delete-user-btn" data-user-id="${userItem.id}" data-username="${escapeAttr(userItem.username)}">🗑️</button>` 
             : '<span class="text-muted">Protected</span>'}
         </td>
       </tr>
@@ -109,40 +114,40 @@ function displayConsumablesView(users) {
   const tbody = document.getElementById('consumablesBody');
   
   if (users.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="27" style="text-align:center;">No members found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="27" class="loading-cell">No members found</td></tr>';
     return;
   }
 
   tbody.innerHTML = users.map(userItem => {
     return `
       <tr>
-        <td><strong>${userItem.username}</strong></td>
-        <td>${userItem.nade_plantain || 0}</td>
-        <td>${userItem.nade_napalm || 0}</td>
-        <td>${userItem.nade_thunder || 0}</td>
-        <td>${userItem.nade_frost || 0}</td>
-        <td>${userItem.nade_tarmac || 0}</td>
-        <td>${userItem.nade_sickness || 0}</td>
-        <td>${userItem.nade_stinky || 0}</td>
-        <td>${userItem.enh_solyanka || 0}</td>
-        <td>${userItem.enh_garlic_soup || 0}</td>
-        <td>${userItem.enh_pea_soup || 0}</td>
-        <td>${userItem.enh_lingonberry || 0}</td>
-        <td>${userItem.enh_frosty || 0}</td>
-        <td>${userItem.enh_alcobull || 0}</td>
-        <td>${userItem.enh_geyser_vodka || 0}</td>
-        <td>${userItem.mob_grog || 0}</td>
-        <td>${userItem.mob_strength_stimulator || 0}</td>
-        <td>${userItem.mob_neurotonic || 0}</td>
-        <td>${userItem.mob_battery || 0}</td>
-        <td>${userItem.mob_salt || 0}</td>
-        <td>${userItem.mob_atlas || 0}</td>
-        <td>${userItem.short_painkiller || 0}</td>
-        <td>${userItem.short_schizoyorsh || 0}</td>
-        <td>${userItem.short_morphine || 0}</td>
-        <td>${userItem.short_epinephrine || 0}</td>
-        <td>${userItem.bonus_stomp || 0}</td>
-        <td>${userItem.bonus_strike || 0}</td>
+        <td class="cell-member"><strong>${escapeHtml(userItem.username)}</strong></td>
+        <td class="cell-num">${userItem.nade_plantain || 0}</td>
+        <td class="cell-num">${userItem.nade_napalm || 0}</td>
+        <td class="cell-num">${userItem.nade_thunder || 0}</td>
+        <td class="cell-num">${userItem.nade_frost || 0}</td>
+        <td class="cell-num">${userItem.nade_tarmac || 0}</td>
+        <td class="cell-num">${userItem.nade_sickness || 0}</td>
+        <td class="cell-num">${userItem.nade_stinky || 0}</td>
+        <td class="cell-num">${userItem.enh_solyanka || 0}</td>
+        <td class="cell-num">${userItem.enh_garlic_soup || 0}</td>
+        <td class="cell-num">${userItem.enh_pea_soup || 0}</td>
+        <td class="cell-num">${userItem.enh_lingonberry || 0}</td>
+        <td class="cell-num">${userItem.enh_frosty || 0}</td>
+        <td class="cell-num">${userItem.enh_alcobull || 0}</td>
+        <td class="cell-num">${userItem.enh_geyser_vodka || 0}</td>
+        <td class="cell-num">${userItem.mob_grog || 0}</td>
+        <td class="cell-num">${userItem.mob_strength_stimulator || 0}</td>
+        <td class="cell-num">${userItem.mob_neurotonic || 0}</td>
+        <td class="cell-num">${userItem.mob_battery || 0}</td>
+        <td class="cell-num">${userItem.mob_salt || 0}</td>
+        <td class="cell-num">${userItem.mob_atlas || 0}</td>
+        <td class="cell-num">${userItem.short_painkiller || 0}</td>
+        <td class="cell-num">${userItem.short_schizoyorsh || 0}</td>
+        <td class="cell-num">${userItem.short_morphine || 0}</td>
+        <td class="cell-num">${userItem.short_epinephrine || 0}</td>
+        <td class="cell-num cell-bonus">${userItem.bonus_stomp || 0}</td>
+        <td class="cell-num cell-bonus">${userItem.bonus_strike || 0}</td>
       </tr>
     `;
   }).join('');
@@ -501,6 +506,23 @@ function exportToCSV() {
 function truncateText(str, length) {
   if (!str) return '-';
   return str.length > length ? str.substring(0, length) + '...' : str;
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function escapeAttr(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 function showMessage(msg, type = 'success') {

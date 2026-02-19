@@ -711,22 +711,22 @@ footer {
   margin: 20px 0;
   border-radius: 8px;
   border: 2px solid var(--dcg-light-grey);
+  background: var(--dcg-black);
 }
 
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9em;
+  font-size: 0.95em;
 }
 
 .admin-table th,
 .admin-table td {
-  padding: 12px 10px;
+  padding: 14px 16px;
   text-align: left;
   border-bottom: 1px solid var(--dcg-light-grey);
   vertical-align: top;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  line-height: 1.5;
 }
 
 .admin-table th {
@@ -737,34 +737,133 @@ footer {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-size: 0.8em;
+  font-size: 0.85em;
   z-index: 10;
-  white-space: nowrap;
 }
 
 .admin-table tbody tr:hover {
-  background: var(--dcg-grey);
+  background: rgba(255, 68, 68, 0.06);
 }
 
 .admin-table tbody tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.02);
 }
 
-/* Text wrapping for long content */
-.admin-table td {
-  max-width: 250px;
-  white-space: normal;
-  word-break: break-word;
+.admin-table tbody tr:nth-child(even):hover {
+  background: rgba(255, 68, 68, 0.08);
 }
 
-/* Make username and short fields not wrap */
-.admin-table td:nth-child(1),
-.admin-table td:nth-child(2),
-.admin-table td:nth-child(5),
-.admin-table td:nth-child(6),
-.admin-table td:nth-child(7),
-.admin-table td:nth-child(8) {
-  white-space: nowrap;
+/* Long text cells - full content visible with wrapping */
+.admin-table .cell-long,
+.admin-table .cell-text {
+  min-width: 180px;
+  max-width: 320px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  word-break: break-word;
+  font-size: 0.92em;
+}
+
+/* Numeric cells - centered, readable */
+.admin-table .cell-num {
+  min-width: 48px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Member/Username column stays readable when scrolling horizontally */
+.admin-table .cell-member,
+.admin-table .cell-username {
+  min-width: 120px;
+  position: sticky;
+  left: 0;
+  background: var(--dcg-dark-grey);
+  z-index: 1;
+  box-shadow: 2px 0 6px rgba(0,0,0,0.3);
+}
+
+.admin-table tbody tr:nth-child(even) .cell-member,
+.admin-table tbody tr:nth-child(even) .cell-username {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.admin-table tbody tr:hover .cell-member,
+.admin-table tbody tr:hover .cell-username {
+  background: rgba(255, 68, 68, 0.12);
+}
+
+/* Loading/empty state */
+.loading-cell {
+  text-align: center !important;
+  padding: 40px !important;
+  color: var(--dcg-text-dim);
+  font-size: 1.1em;
+}
+
+/* Stats table specific */
+.admin-table-stats .col-long { min-width: 200px; }
+.admin-table-stats .col-id { min-width: 44px; }
+.admin-table-stats .col-username { min-width: 110px; }
+.admin-table-stats .col-ingame,
+.admin-table-stats .col-discord { min-width: 140px; }
+.admin-table-stats .col-role { min-width: 90px; }
+.admin-table-stats .col-stats { min-width: 56px; text-align: center; }
+.admin-table-stats .col-image { min-width: 90px; }
+.admin-table-stats .col-date { min-width: 100px; }
+.admin-table-stats .col-actions { min-width: 100px; }
+
+/* Sticky ID + Username for stats table horizontal scroll */
+.admin-table-stats .cell-id,
+.admin-table-stats .cell-username {
+  position: sticky;
+  left: 0;
+  background: var(--dcg-dark-grey);
+  z-index: 1;
+}
+.admin-table-stats .cell-username { left: 44px; box-shadow: 2px 0 6px rgba(0,0,0,0.2); }
+.admin-table-stats .cell-id { z-index: 2; }
+.admin-table-stats tbody tr:nth-child(even) .cell-id,
+.admin-table-stats tbody tr:nth-child(even) .cell-username {
+  background: rgba(255, 255, 255, 0.03);
+}
+.admin-table-stats tbody tr:hover .cell-id,
+.admin-table-stats tbody tr:hover .cell-username {
+  background: rgba(255, 68, 68, 0.12);
+}
+
+/* Consumables table - full headers, readable numbers */
+.admin-table--consumables .header-row-categories .header-group {
+  background: var(--dcg-grey);
+  color: var(--dcg-accent);
+  text-align: center;
+  padding: 10px 6px;
+  font-size: 0.8em;
+}
+
+.admin-table--consumables .header-row-labels th {
+  background: var(--dcg-black);
+  padding: 10px 8px;
+  font-size: 0.75em;
+  min-width: 44px;
+}
+
+.admin-table-consumables .cell-num {
+  min-width: 44px;
+  padding: 10px 8px;
+}
+
+.admin-table-consumables .cell-member {
+  min-width: 130px;
+  font-weight: 600;
+}
+
+.admin-table-consumables .cell-bonus {
+  background: rgba(255, 152, 0, 0.08);
+}
+
+.no-data {
+  color: var(--dcg-text-dim);
+  font-style: italic;
 }
 
 /* ========================================
@@ -841,10 +940,11 @@ footer {
 
 @media (max-width: 1000px) {
   .admin-table {
-    font-size: 0.8em;
+    font-size: 0.88em;
   }
   
-  .admin-table td {
-    max-width: 150px;
+  .admin-table .cell-long,
+  .admin-table .cell-text {
+    max-width: 200px;
   }
 }

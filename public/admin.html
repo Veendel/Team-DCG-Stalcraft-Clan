@@ -58,29 +58,29 @@
         <input type="text" id="searchInput" placeholder="🔍 Search members...">
       </div>
       
-      <div class="admin-table-wrapper">
+      <div class="admin-table-wrapper admin-table-stats">
         <table id="statsTable" class="admin-table">
           <thead>
             <tr>
-              <th style="min-width: 50px;">ID</th>
-              <th style="min-width: 120px;">Username</th>
-              <th style="min-width: 150px;">In-Game</th>
-              <th style="min-width: 150px;">Discord</th>
-              <th style="min-width: 80px;">Role</th>
-              <th style="min-width: 80px;">Kills</th>
-              <th style="min-width: 80px;">Deaths</th>
-              <th style="min-width: 80px;">K/D</th>
-              <th style="min-width: 200px;">Weapons</th>
-              <th style="min-width: 200px;">Armors</th>
-              <th style="min-width: 200px;">Artifacts</th>
-              <th style="min-width: 100px;">Image</th>
-              <th style="min-width: 120px;">Joined</th>
-              <th style="min-width: 150px;">Actions</th>
+              <th class="col-id">ID</th>
+              <th class="col-username">Username</th>
+              <th class="col-ingame">In-Game Name</th>
+              <th class="col-discord">Discord</th>
+              <th class="col-role">Role</th>
+              <th class="col-stats">Kills</th>
+              <th class="col-stats">Deaths</th>
+              <th class="col-stats">K/D</th>
+              <th class="col-long">Weapons</th>
+              <th class="col-long">Armors</th>
+              <th class="col-long">Artifact Builds</th>
+              <th class="col-image">Image</th>
+              <th class="col-date">Joined</th>
+              <th class="col-actions">Actions</th>
             </tr>
           </thead>
           <tbody id="statsBody">
             <tr>
-              <td colspan="14" style="text-align: center;">Loading data...</td>
+              <td colspan="14" class="loading-cell">Loading data...</td>
             </tr>
           </tbody>
         </table>
@@ -94,47 +94,49 @@
         <input type="text" id="searchInput2" placeholder="🔍 Search members...">
       </div>
       
-      <div class="admin-table-wrapper">
-        <table id="consumablesTable" class="admin-table">
+      <div class="admin-table-wrapper admin-table-consumables">
+        <table id="consumablesTable" class="admin-table admin-table--consumables">
           <thead>
-            <tr>
-              <th style="min-width: 120px;">Member</th>
-              <th colspan="4" style="background: #1a1a1a;">💣 Grenades</th>
-              <th colspan="7" style="background: #1a1a1a;">⚡ Enhancement</th>
-              <th colspan="6" style="background: #1a1a1a;">🏃 Mobility</th>
-              <th colspan="4" style="background: #1a1a1a;">💉 Short-term</th>
-              <th colspan="2" style="background: #1a1a1a;">🎁 Bonus</th>
+            <tr class="header-row-categories">
+              <th rowspan="2" class="col-member">Member</th>
+              <th colspan="7" class="header-group">💣 Grenades</th>
+              <th colspan="7" class="header-group">⚡ Enhancement</th>
+              <th colspan="6" class="header-group">🏃 Mobility</th>
+              <th colspan="4" class="header-group">💉 Short-term</th>
+              <th colspan="2" class="header-group">🎁 Bonus</th>
             </tr>
-            <tr>
-              <th>Username</th>
-              <th>Plant</th>
-              <th>Napalm</th>
-              <th>Thund</th>
-              <th>Frost</th>
-              <th>Sol</th>
-              <th>Gar</th>
-              <th>Pea</th>
-              <th>Ling</th>
-              <th>Fros</th>
-              <th>Alco</th>
-              <th>Geys</th>
-              <th>Grog</th>
-              <th>Str</th>
-              <th>Neur</th>
-              <th>Batt</th>
-              <th>SALT</th>
-              <th>ATLS</th>
-              <th>Pain</th>
-              <th>Schz</th>
-              <th>Morp</th>
-              <th>Epi</th>
-              <th>STMP</th>
-              <th>STRK</th>
+            <tr class="header-row-labels">
+              <th title="Plantain">Plantain</th>
+              <th title="Napalm">Napalm</th>
+              <th title="Thunder">Thunder</th>
+              <th title="Frost">Frost</th>
+              <th title="Tarmac">Tarmac</th>
+              <th title="Sickness">Sickness</th>
+              <th title="Stinky">Stinky</th>
+              <th title="Solyanka">Solyanka</th>
+              <th title="Garlic Soup">Garlic</th>
+              <th title="Pea Soup">Pea Soup</th>
+              <th title="Lingonberry">Lingonberry</th>
+              <th title="Frosty">Frosty</th>
+              <th title="Alcobull">Alcobull</th>
+              <th title="Geyser Vodka">Geyser</th>
+              <th title="Grog">Grog</th>
+              <th title="Strength Stimulator">Str.Stim</th>
+              <th title="Neurotonic">Neurotonic</th>
+              <th title="Battery">Battery</th>
+              <th title="SALT">SALT</th>
+              <th title="ATLAS">ATLAS</th>
+              <th title="Painkiller">Painkill</th>
+              <th title="SchizoYorsh">SchizoY</th>
+              <th title="Morphine">Morphine</th>
+              <th title="Epinephrine">Epi</th>
+              <th title="STOMP">STOMP</th>
+              <th title="Strike">Strike</th>
             </tr>
           </thead>
           <tbody id="consumablesBody">
             <tr>
-              <td colspan="24" style="text-align: center;">Loading data...</td>
+              <td colspan="27" class="loading-cell">Loading data...</td>
             </tr>
           </tbody>
         </table>
