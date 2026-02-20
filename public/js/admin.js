@@ -48,7 +48,7 @@ async function loadUsers() {
     console.error('Load users error:', error);
     showError('Failed to load users: ' + error.message);
     document.getElementById('statsBody').innerHTML = '<tr><td colspan="14" class="loading-cell" style="color:var(--dcg-danger);">Error loading data. Check console.</td></tr>';
-    document.getElementById('consumablesBody').innerHTML = '<tr><td colspan="27" class="loading-cell" style="color:var(--dcg-danger);">Error loading data. Check console.</td></tr>';
+    document.getElementById('consumablesBody').innerHTML = '<tr><td colspan="25" class="loading-cell" style="color:var(--dcg-danger);">Error loading data. Check console.</td></tr>';
   }
 }
 
@@ -114,7 +114,7 @@ function displayConsumablesView(users) {
   const tbody = document.getElementById('consumablesBody');
   
   if (users.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="27" class="loading-cell">No members found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="25" class="loading-cell">No members found</td></tr>';
     return;
   }
 
@@ -146,8 +146,6 @@ function displayConsumablesView(users) {
         <td class="cell-num">${userItem.short_schizoyorsh || 0}</td>
         <td class="cell-num">${userItem.short_morphine || 0}</td>
         <td class="cell-num">${userItem.short_epinephrine || 0}</td>
-        <td class="cell-num cell-bonus">${userItem.bonus_stomp || 0}</td>
-        <td class="cell-num cell-bonus">${userItem.bonus_strike || 0}</td>
       </tr>
     `;
   }).join('');
@@ -440,7 +438,7 @@ function exportToCSV() {
     'Solyanka', 'Garlic Soup', 'Pea Soup', 'Lingonberry', 'Frosty', 'Alcobull', 'Geyser',
     'Grog', 'Strength Stim', 'Neurotonic', 'Battery', 'SALT', 'ATLAS',
     'Painkiller', 'SchizoYorsh', 'Morphine', 'Epinephrine',
-    'STOMP', 'Strike', 'Clan War (Today)'
+    'Clan War (Today)'
   ];
 
   const csvData = allUsersData.map(userItem => {
@@ -479,8 +477,6 @@ function exportToCSV() {
       userItem.short_schizoyorsh || 0,
       userItem.short_morphine || 0,
       userItem.short_epinephrine || 0,
-      userItem.bonus_stomp || 0,
-      userItem.bonus_strike || 0,
       userItem.clan_war_registered === true ? 'YES' : userItem.clan_war_registered === false ? 'NO' : 'No Response'
     ];
   });

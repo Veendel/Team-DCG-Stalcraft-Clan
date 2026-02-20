@@ -114,8 +114,6 @@ async function loadConsumables() {
       set('shortSchizoyorsh', c.short_schizoyorsh);
       set('shortMorphine', c.short_morphine);
       set('shortEpinephrine', c.short_epinephrine);
-      set('bonusStomp', c.bonus_stomp);
-      set('bonusStrike', c.bonus_strike);
     }
   } catch (error) {
     console.error('Failed to load consumables:', error);
@@ -264,10 +262,7 @@ document.getElementById('consumablesForm').addEventListener('submit', async (e) 
     short_painkiller: toInt(document.getElementById('shortPainkiller').value),
     short_schizoyorsh: toInt(document.getElementById('shortSchizoyorsh').value),
     short_morphine: toInt(document.getElementById('shortMorphine').value),
-    short_epinephrine: toInt(document.getElementById('shortEpinephrine').value),
-    
-    bonus_stomp: toInt(document.getElementById('bonusStomp').value),
-    bonus_strike: toInt(document.getElementById('bonusStrike').value)
+    short_epinephrine: toInt(document.getElementById('shortEpinephrine').value)
   };
 
   try {

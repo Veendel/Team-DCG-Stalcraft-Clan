@@ -1047,10 +1047,6 @@ footer {
   font-weight: 600;
 }
 
-.admin-table-consumables .cell-bonus {
-  background: rgba(255, 152, 0, 0.08);
-}
-
 .no-data {
   color: var(--dcg-text-dim);
   font-style: italic;

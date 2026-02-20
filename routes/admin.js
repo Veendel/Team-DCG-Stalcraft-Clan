@@ -49,8 +49,6 @@ router.get('/users', verifyToken, verifyAdmin, async (req, res) => {
         c.short_schizoyorsh,
         c.short_morphine,
         c.short_epinephrine,
-        c.bonus_stomp,
-        c.bonus_strike,
         cw.registered as clan_war_registered
       FROM users u
       LEFT JOIN player_stats p ON u.id = p.user_id
@@ -242,10 +240,8 @@ router.put('/consumables/:userId', verifyToken, async (req, res) => {
          short_painkiller = $21,
          short_schizoyorsh = $22,
          short_morphine = $23,
-         short_epinephrine = $24,
-         bonus_stomp = $25,
-         bonus_strike = $26
-         WHERE user_id = $27
+         short_epinephrine = $24
+         WHERE user_id = $25
          RETURNING *`,
         [
           toInt(c.nade_plantain),
@@ -272,8 +268,6 @@ router.put('/consumables/:userId', verifyToken, async (req, res) => {
           toInt(c.short_schizoyorsh),
           toInt(c.short_morphine),
           toInt(c.short_epinephrine),
-          toInt(c.bonus_stomp),
-          toInt(c.bonus_strike),
           userId
         ]
       );
@@ -289,11 +283,10 @@ router.put('/consumables/:userId', verifyToken, async (req, res) => {
           enh_frosty, enh_alcobull, enh_geyser_vodka,
           mob_grog, mob_strength_stimulator, mob_neurotonic, mob_battery,
           mob_salt, mob_atlas,
-          short_painkiller, short_schizoyorsh, short_morphine, short_epinephrine,
-          bonus_stomp, bonus_strike
+          short_painkiller, short_schizoyorsh, short_morphine, short_epinephrine
         ) VALUES (
           $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,
-          $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27
+          $16, $17, $18, $19, $20, $21, $22, $23, $24, $25
         )`,
         [
           userId,
@@ -320,9 +313,7 @@ router.put('/consumables/:userId', verifyToken, async (req, res) => {
           toInt(c.short_painkiller),
           toInt(c.short_schizoyorsh),
           toInt(c.short_morphine),
-          toInt(c.short_epinephrine),
-          toInt(c.bonus_stomp),
-          toInt(c.bonus_strike)
+          toInt(c.short_epinephrine)
         ]
       );
     }
@@ -363,90 +354,6 @@ router.get('/consumables/:userId', verifyToken, async (req, res) => {
   }
 });
 
-// ============================================
-// UPDATE CONSUMABLES
-// ============================================
-
-router.put('/consumables/:userId', verifyToken, async (req, res) => {
-  try {
-    const userId = req.params.userId;
-    const consumables = req.body;
-
-    if (req.user.id !== parseInt(userId) && req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Access denied' });
-    }
-
-    // Debug log
-    console.log('Received consumables for user', userId);
-    console.log('STOMP:', consumables.bonus_stomp);
-    console.log('STRIKE:', consumables.bonus_strike);
-
-    const check = await pool.query('SELECT id FROM consumables WHERE user_id = $1', [userId]);
-
-    if (check.rows.length > 0) {
-      // UPDATE - Make sure bonus_stomp and bonus_strike are in the right positions
-      await pool.query(
-        `UPDATE consumables SET
-         nade_plantain = $1, nade_napalm = $2, nade_thunder = $3, nade_frost = $4,
-         nade_tarmac = $5, nade_sickness = $6, nade_stinky = $7,
-         enh_solyanka = $8, enh_garlic_soup = $9, enh_pea_soup = $10, enh_lingonberry = $11,
-         enh_frosty = $12, enh_alcobull = $13, enh_geyser_vodka = $14,
-         mob_grog = $15, mob_strength_stimulator = $16, mob_neurotonic = $17, mob_battery = $18,
-         mob_salt = $19, mob_atlas = $20,
-         short_painkiller = $21, short_schizoyorsh = $22, short_morphine = $23, short_epinephrine = $24,
-         bonus_stomp = $25, bonus_strike = $26
-         WHERE user_id = $27`,
-        [
-          consumables.nade_plantain, consumables.nade_napalm, consumables.nade_thunder, consumables.nade_frost,
-          consumables.nade_tarmac, consumables.nade_sickness, consumables.nade_stinky,
-          consumables.enh_solyanka, consumables.enh_garlic_soup, consumables.enh_pea_soup, consumables.enh_lingonberry,
-          consumables.enh_frosty, consumables.enh_alcobull, consumables.enh_geyser_vodka,
-          consumables.mob_grog, consumables.mob_strength_stimulator, consumables.mob_neurotonic, consumables.mob_battery,
-          consumables.mob_salt, consumables.mob_atlas,
-          consumables.short_painkiller, consumables.short_schizoyorsh, consumables.short_morphine, consumables.short_epinephrine,
-          consumables.bonus_stomp, // $25
-          consumables.bonus_strike, // $26
-          userId // $27
-        ]
-      );
-
-      console.log('Updated successfully!');
-    } else {
-      // INSERT
-      await pool.query(
-        `INSERT INTO consumables (
-          user_id, nade_plantain, nade_napalm, nade_thunder, nade_frost,
-          nade_tarmac, nade_sickness, nade_stinky,
-          enh_solyanka, enh_garlic_soup, enh_pea_soup, enh_lingonberry,
-          enh_frosty, enh_alcobull, enh_geyser_vodka,
-          mob_grog, mob_strength_stimulator, mob_neurotonic, mob_battery,
-          mob_salt, mob_atlas,
-          short_painkiller, short_schizoyorsh, short_morphine, short_epinephrine,
-          bonus_stomp, bonus_strike
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27)`,
-        [
-          userId,
-          consumables.nade_plantain, consumables.nade_napalm, consumables.nade_thunder, consumables.nade_frost,
-          consumables.nade_tarmac, consumables.nade_sickness, consumables.nade_stinky,
-          consumables.enh_solyanka, consumables.enh_garlic_soup, consumables.enh_pea_soup, consumables.enh_lingonberry,
-          consumables.enh_frosty, consumables.enh_alcobull, consumables.enh_geyser_vodka,
-          consumables.mob_grog, consumables.mob_strength_stimulator, consumables.mob_neurotonic, consumables.mob_battery,
-          consumables.mob_salt, consumables.mob_atlas,
-          consumables.short_painkiller, consumables.short_schizoyorsh, consumables.short_morphine, consumables.short_epinephrine,
-          consumables.bonus_stomp,
-          consumables.bonus_strike
-        ]
-      );
-
-      console.log('Inserted successfully!');
-    }
-
-    res.json({ message: 'Consumables updated successfully' });
-  } catch (error) {
-    console.error('Error updating consumables:', error);
-    res.status(500).json({ error: 'Failed to update consumables' });
-  }
-});
 // ============================================
 // CLAN WAR REGISTRATION (NEW)
 // ============================================

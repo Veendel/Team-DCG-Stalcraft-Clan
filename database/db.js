@@ -87,9 +87,7 @@ await client.query(`
     short_painkiller INTEGER DEFAULT 0,
     short_schizoyorsh INTEGER DEFAULT 0,
     short_morphine INTEGER DEFAULT 0,
-    short_epinephrine INTEGER DEFAULT 0,
-    bonus_stomp INTEGER DEFAULT 0,
-    bonus_strike INTEGER DEFAULT 0
+    short_epinephrine INTEGER DEFAULT 0
   )
 `);
 
@@ -140,6 +138,10 @@ await client.query(`
 
       console.log('✓ Default admin user created');
     }
+
+    // Migration: remove bonus columns if they exist (from older schema)
+    await client.query('ALTER TABLE consumables DROP COLUMN IF EXISTS bonus_stomp');
+    await client.query('ALTER TABLE consumables DROP COLUMN IF EXISTS bonus_strike');
 
     await client.query('COMMIT');
   } catch (err) {

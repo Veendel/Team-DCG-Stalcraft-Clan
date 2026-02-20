@@ -129,7 +129,6 @@ team-dcg-tracker/
 | enh_* | INTEGER | Enhancement counts |
 | mob_* | INTEGER | Mobility item counts |
 | short_* | INTEGER | Short-term item counts |
-| bonus_* | BOOLEAN | Bonus items (STOMP, Strike) |
 
 
 ---
