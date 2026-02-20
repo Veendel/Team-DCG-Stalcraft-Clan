@@ -89,7 +89,7 @@ async function loadConsumables() {
 
     if (response.ok) {
       const c = await response.json();
-      const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || 0; };
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = toInt(val); };
       set('nadePlantain', c.nade_plantain);
       set('nadeNapalm', c.nade_napalm);
       set('nadeThunder', c.nade_thunder);
@@ -226,45 +226,49 @@ async function saveEquipment(equipment) {
 // UPDATE CONSUMABLES
 // ============================================
 
+// Ensures value is always an integer (never boolean)
+function toInt(val) {
+  if (val === true) return 1;
+  if (val === false || val === null || val === undefined) return 0;
+  const n = parseInt(val, 10);
+  return isNaN(n) ? 0 : Math.max(0, n);
+}
+
 document.getElementById('consumablesForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const consumables = {
-    nade_plantain: parseInt(document.getElementById('nadePlantain').value) || 0,
-    nade_napalm: parseInt(document.getElementById('nadeNapalm').value) || 0,
-    nade_thunder: parseInt(document.getElementById('nadeThunder').value) || 0,
-    nade_frost: parseInt(document.getElementById('nadeFrost').value) || 0,
-    nade_tarmac: parseInt(document.getElementById('nadeTarmac').value) || 0,
-    nade_sickness: parseInt(document.getElementById('nadeSickness').value) || 0,
-    nade_stinky: parseInt(document.getElementById('nadeStinky').value) || 0,
+    nade_plantain: toInt(document.getElementById('nadePlantain').value),
+    nade_napalm: toInt(document.getElementById('nadeNapalm').value),
+    nade_thunder: toInt(document.getElementById('nadeThunder').value),
+    nade_frost: toInt(document.getElementById('nadeFrost').value),
+    nade_tarmac: toInt(document.getElementById('nadeTarmac').value),
+    nade_sickness: toInt(document.getElementById('nadeSickness').value),
+    nade_stinky: toInt(document.getElementById('nadeStinky').value),
     
-    enh_solyanka: parseInt(document.getElementById('enhSolyanka').value) || 0,
-    enh_garlic_soup: parseInt(document.getElementById('enhGarlicSoup').value) || 0,
-    enh_pea_soup: parseInt(document.getElementById('enhPeaSoup').value) || 0,
-    enh_lingonberry: parseInt(document.getElementById('enhLingonberry').value) || 0,
-    enh_frosty: parseInt(document.getElementById('enhFrosty').value) || 0,
-    enh_alcobull: parseInt(document.getElementById('enhAlcobull').value) || 0,
-    enh_geyser_vodka: parseInt(document.getElementById('enhGeyserVodka').value) || 0,
+    enh_solyanka: toInt(document.getElementById('enhSolyanka').value),
+    enh_garlic_soup: toInt(document.getElementById('enhGarlicSoup').value),
+    enh_pea_soup: toInt(document.getElementById('enhPeaSoup').value),
+    enh_lingonberry: toInt(document.getElementById('enhLingonberry').value),
+    enh_frosty: toInt(document.getElementById('enhFrosty').value),
+    enh_alcobull: toInt(document.getElementById('enhAlcobull').value),
+    enh_geyser_vodka: toInt(document.getElementById('enhGeyserVodka').value),
     
-    mob_grog: parseInt(document.getElementById('mobGrog').value) || 0,
-    mob_strength_stimulator: parseInt(document.getElementById('mobStrengthStimulator').value) || 0,
-    mob_neurotonic: parseInt(document.getElementById('mobNeurotonic').value) || 0,
-    mob_battery: parseInt(document.getElementById('mobBattery').value) || 0,
-    mob_salt: parseInt(document.getElementById('mobSalt').value) || 0,
-    mob_atlas: parseInt(document.getElementById('mobAtlas').value) || 0,
+    mob_grog: toInt(document.getElementById('mobGrog').value),
+    mob_strength_stimulator: toInt(document.getElementById('mobStrengthStimulator').value),
+    mob_neurotonic: toInt(document.getElementById('mobNeurotonic').value),
+    mob_battery: toInt(document.getElementById('mobBattery').value),
+    mob_salt: toInt(document.getElementById('mobSalt').value),
+    mob_atlas: toInt(document.getElementById('mobAtlas').value),
     
-    short_painkiller: parseInt(document.getElementById('shortPainkiller').value) || 0,
-    short_schizoyorsh: parseInt(document.getElementById('shortSchizoyorsh').value) || 0,
-    short_morphine: parseInt(document.getElementById('shortMorphine').value) || 0,
-    short_epinephrine: parseInt(document.getElementById('shortEpinephrine').value) || 0,
+    short_painkiller: toInt(document.getElementById('shortPainkiller').value),
+    short_schizoyorsh: toInt(document.getElementById('shortSchizoyorsh').value),
+    short_morphine: toInt(document.getElementById('shortMorphine').value),
+    short_epinephrine: toInt(document.getElementById('shortEpinephrine').value),
     
-    // CRITICAL: Make sure these are integers, not booleans!
-    bonus_stomp: parseInt(document.getElementById('bonusStomp').value) || 0,
-    bonus_strike: parseInt(document.getElementById('bonusStrike').value) || 0
+    bonus_stomp: toInt(document.getElementById('bonusStomp').value),
+    bonus_strike: toInt(document.getElementById('bonusStrike').value)
   };
-
-  console.log('Saving STOMP:', consumables.bonus_stomp); // Debug
-  console.log('Saving STRIKE:', consumables.bonus_strike); // Debug
 
   try {
     const response = await fetch(`/api/consumables/${user.id}`, {

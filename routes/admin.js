@@ -196,15 +196,18 @@ router.delete('/users/:id', verifyToken, verifyAdmin, async (req, res) => {
 // UPDATE USER ROLE (NEW)
 // ============================================
 
+// Coerce to integer (handles boolean true/false, strings, null, undefined)
+const toInt = (v) => {
+  if (v === true) return 1;
+  if (v === false || v == null) return 0;
+  const n = parseInt(v, 10);
+  return isNaN(n) ? 0 : Math.max(0, n);
+};
+
 router.put('/consumables/:userId', verifyToken, async (req, res) => {
   try {
     const userId = req.params.userId;
-    const c = req.body; // Shorter variable name
-
-    console.log('=== CONSUMABLES UPDATE ===');
-    console.log('User:', userId);
-    console.log('STOMP:', c.bonus_stomp);
-    console.log('STRIKE:', c.bonus_strike);
+    const c = req.body;
 
     if (req.user.id !== parseInt(userId) && req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Access denied' });
@@ -213,7 +216,7 @@ router.put('/consumables/:userId', verifyToken, async (req, res) => {
     const check = await pool.query('SELECT id FROM consumables WHERE user_id = $1', [userId]);
 
     if (check.rows.length > 0) {
-      // UPDATE existing record
+      // UPDATE existing record - all values coerced to integers
       const result = await pool.query(
         `UPDATE consumables SET
          nade_plantain = $1,
@@ -245,37 +248,35 @@ router.put('/consumables/:userId', verifyToken, async (req, res) => {
          WHERE user_id = $27
          RETURNING *`,
         [
-          c.nade_plantain || 0,
-          c.nade_napalm || 0,
-          c.nade_thunder || 0,
-          c.nade_frost || 0,
-          c.nade_tarmac || 0,
-          c.nade_sickness || 0,
-          c.nade_stinky || 0,
-          c.enh_solyanka || 0,
-          c.enh_garlic_soup || 0,
-          c.enh_pea_soup || 0,
-          c.enh_lingonberry || 0,
-          c.enh_frosty || 0,
-          c.enh_alcobull || 0,
-          c.enh_geyser_vodka || 0,
-          c.mob_grog || 0,
-          c.mob_strength_stimulator || 0,
-          c.mob_neurotonic || 0,
-          c.mob_battery || 0,
-          c.mob_salt || 0,
-          c.mob_atlas || 0,
-          c.short_painkiller || 0,
-          c.short_schizoyorsh || 0,
-          c.short_morphine || 0,
-          c.short_epinephrine || 0,
-          c.bonus_stomp || 0,
-          c.bonus_strike || 0,
+          toInt(c.nade_plantain),
+          toInt(c.nade_napalm),
+          toInt(c.nade_thunder),
+          toInt(c.nade_frost),
+          toInt(c.nade_tarmac),
+          toInt(c.nade_sickness),
+          toInt(c.nade_stinky),
+          toInt(c.enh_solyanka),
+          toInt(c.enh_garlic_soup),
+          toInt(c.enh_pea_soup),
+          toInt(c.enh_lingonberry),
+          toInt(c.enh_frosty),
+          toInt(c.enh_alcobull),
+          toInt(c.enh_geyser_vodka),
+          toInt(c.mob_grog),
+          toInt(c.mob_strength_stimulator),
+          toInt(c.mob_neurotonic),
+          toInt(c.mob_battery),
+          toInt(c.mob_salt),
+          toInt(c.mob_atlas),
+          toInt(c.short_painkiller),
+          toInt(c.short_schizoyorsh),
+          toInt(c.short_morphine),
+          toInt(c.short_epinephrine),
+          toInt(c.bonus_stomp),
+          toInt(c.bonus_strike),
           userId
         ]
       );
-
-      console.log('Updated! STOMP:', result.rows[0].bonus_stomp, 'STRIKE:', result.rows[0].bonus_strike);
 
     } else {
       // INSERT new record
@@ -296,36 +297,34 @@ router.put('/consumables/:userId', verifyToken, async (req, res) => {
         )`,
         [
           userId,
-          c.nade_plantain || 0,
-          c.nade_napalm || 0,
-          c.nade_thunder || 0,
-          c.nade_frost || 0,
-          c.nade_tarmac || 0,
-          c.nade_sickness || 0,
-          c.nade_stinky || 0,
-          c.enh_solyanka || 0,
-          c.enh_garlic_soup || 0,
-          c.enh_pea_soup || 0,
-          c.enh_lingonberry || 0,
-          c.enh_frosty || 0,
-          c.enh_alcobull || 0,
-          c.enh_geyser_vodka || 0,
-          c.mob_grog || 0,
-          c.mob_strength_stimulator || 0,
-          c.mob_neurotonic || 0,
-          c.mob_battery || 0,
-          c.mob_salt || 0,
-          c.mob_atlas || 0,
-          c.short_painkiller || 0,
-          c.short_schizoyorsh || 0,
-          c.short_morphine || 0,
-          c.short_epinephrine || 0,
-          c.bonus_stomp || 0,
-          c.bonus_strike || 0
+          toInt(c.nade_plantain),
+          toInt(c.nade_napalm),
+          toInt(c.nade_thunder),
+          toInt(c.nade_frost),
+          toInt(c.nade_tarmac),
+          toInt(c.nade_sickness),
+          toInt(c.nade_stinky),
+          toInt(c.enh_solyanka),
+          toInt(c.enh_garlic_soup),
+          toInt(c.enh_pea_soup),
+          toInt(c.enh_lingonberry),
+          toInt(c.enh_frosty),
+          toInt(c.enh_alcobull),
+          toInt(c.enh_geyser_vodka),
+          toInt(c.mob_grog),
+          toInt(c.mob_strength_stimulator),
+          toInt(c.mob_neurotonic),
+          toInt(c.mob_battery),
+          toInt(c.mob_salt),
+          toInt(c.mob_atlas),
+          toInt(c.short_painkiller),
+          toInt(c.short_schizoyorsh),
+          toInt(c.short_morphine),
+          toInt(c.short_epinephrine),
+          toInt(c.bonus_stomp),
+          toInt(c.bonus_strike)
         ]
       );
-
-      console.log('Created!');
     }
 
     res.json({ message: 'Consumables updated successfully' });
