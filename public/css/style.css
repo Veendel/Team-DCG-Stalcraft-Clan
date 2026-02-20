@@ -961,7 +961,7 @@ footer {
   font-variant-numeric: tabular-nums;
 }
 
-/* Member/Username column stays readable when scrolling horizontally */
+/* Member/Username column stays readable when scrolling horizontally - solid backgrounds */
 .admin-table .cell-member,
 .admin-table .cell-username {
   min-width: 120px;
@@ -974,12 +974,12 @@ footer {
 
 .admin-table tbody tr:nth-child(even) .cell-member,
 .admin-table tbody tr:nth-child(even) .cell-username {
-  background: rgba(255, 255, 255, 0.03);
+  background: #1e1e1e;
 }
 
 .admin-table tbody tr:hover .cell-member,
 .admin-table tbody tr:hover .cell-username {
-  background: rgba(255, 68, 68, 0.12);
+  background: #2a1818;
 }
 
 /* Loading/empty state */
@@ -1002,7 +1002,7 @@ footer {
 .admin-table-stats .col-date { min-width: 100px; }
 .admin-table-stats .col-actions { min-width: 100px; }
 
-/* Sticky ID + Username for stats table horizontal scroll */
+/* Sticky ID + Username for stats table horizontal scroll - solid backgrounds */
 .admin-table-stats .cell-id,
 .admin-table-stats .cell-username {
   position: sticky;
@@ -1014,11 +1014,11 @@ footer {
 .admin-table-stats .cell-id { z-index: 2; }
 .admin-table-stats tbody tr:nth-child(even) .cell-id,
 .admin-table-stats tbody tr:nth-child(even) .cell-username {
-  background: rgba(255, 255, 255, 0.03);
+  background: #1e1e1e;
 }
 .admin-table-stats tbody tr:hover .cell-id,
 .admin-table-stats tbody tr:hover .cell-username {
-  background: rgba(255, 68, 68, 0.12);
+  background: #2a1818;
 }
 
 /* Consumables table - full headers, readable numbers */
