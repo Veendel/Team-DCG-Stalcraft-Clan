@@ -82,6 +82,7 @@ function displayStatsView(users) {
         <td class="cell-role">
           <select class="role-select" data-user-id="${userItem.id}" data-current-role="${userItem.role}">
             <option value="user" ${userItem.role === 'user' ? 'selected' : ''}>User</option>
+            <option value="member" ${userItem.role === 'member' ? 'selected' : ''}>Member</option>
             <option value="admin" ${userItem.role === 'admin' ? 'selected' : ''}>Admin</option>
           </select>
         </td>

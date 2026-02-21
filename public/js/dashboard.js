@@ -7,6 +7,12 @@ if (!token) {
   throw new Error('No token'); // Prevent further execution
 }
 
+// Only member and admin can access dashboard; user role goes to user.html
+if (user.role === 'user') {
+  window.location.href = '/user.html';
+  throw new Error('Not a clan member');
+}
+
 // Validate user object has id
 if (!user || !user.id) {
   console.error('Invalid user data in localStorage');

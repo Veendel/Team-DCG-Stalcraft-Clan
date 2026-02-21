@@ -199,8 +199,8 @@ router.put('/users/:userId/role', verifyToken, verifyAdmin, async (req, res) => 
     const userId = req.params.userId;
     const { role } = req.body;
 
-    if (!role || !['user', 'admin'].includes(role)) {
-      return res.status(400).json({ error: 'Invalid role. Must be "user" or "admin".' });
+    if (!role || !['user', 'member', 'admin'].includes(role)) {
+      return res.status(400).json({ error: 'Invalid role. Must be "user", "member", or "admin".' });
     }
 
     const result = await pool.query(

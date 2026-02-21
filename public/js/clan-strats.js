@@ -4,6 +4,13 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 // Check authentication
 if (!token) {
   window.location.href = '/login.html';
+  throw new Error('No token');
+}
+
+// Only member and admin can access clan strats; user role goes to user.html
+if (user.role === 'user') {
+  window.location.href = '/user.html';
+  throw new Error('Not a clan member');
 }
 
 // Show admin upload section if user is admin

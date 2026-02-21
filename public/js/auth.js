@@ -19,7 +19,9 @@ if (document.getElementById('loginForm')) {
       if (response.ok) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        window.location.href = '/dashboard.html';
+        // Redirect based on role: admin/member → dashboard, user → user.html
+        const role = data.user?.role || 'user';
+        window.location.href = (role === 'admin' || role === 'member') ? '/dashboard.html' : '/user.html';
       } else {
         errorDiv.textContent = data.error;
         errorDiv.style.display = 'block';
